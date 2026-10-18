@@ -1,0 +1,73 @@
+name: Build desktop apps
+
+# Builds Wishlist.exe (Windows) and Wishlist.app (macOS, Apple Silicon) with PyInstaller.
+# Run it from the Actions tab, or push a tag like v1.0.0 to also publish a GitHub Release.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Wishlist-Windows
+          - os: macos-latest
+            name: Wishlist-macOS
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build tools
+        run: python -m pip install pyinstaller pywebview
+      - name: Build
+        run: pyinstaller --noconfirm --clean wishlist.spec
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Move-Item dist/Wishlist.exe dist/Wishlist-Windows.exe
+          Compress-Archive -Path extension -DestinationPath dist/Wishlist-Chrome-extension.zip
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          codesign --force --deep --sign - dist/Wishlist.app
+          ditto -c -k --keepParent dist/Wishlist.app dist/Wishlist-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: |
+            dist/Wishlist-Windows.exe
+            dist/Wishlist-macOS.zip
+            dist/Wishlist-Chrome-extension.zip
+          if-no-files-found: ignore
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'NOTES'
+          **Downloads**
+          - **Wishlist-Windows.exe**: double-click to run (Windows 10/11; uses the built-in Edge WebView2). Windows may warn about an unrecognized app: click *More info* → *Run anyway*.
+          - **Wishlist-macOS.zip**: unzip and move *Wishlist.app* to Applications (Apple Silicon). The first time, right-click it → *Open* → *Open*, since it isn't notarized.
+          - **Wishlist-Chrome-extension.zip**: unzip, then in Chrome open `chrome://extensions`, turn on Developer mode, click *Load unpacked* and pick the unzipped `extension` folder.
+
+          The app serves your list on http://localhost:8080 while its window is open, so the Chrome extension adds items straight to it.
+          NOTES
+          gh release create "$GITHUB_REF_NAME" artifacts/* --repo "$GITHUB_REPOSITORY" --title "Wishlist $GITHUB_REF_NAME" --notes-file notes.md
