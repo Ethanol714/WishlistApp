@@ -18,28 +18,65 @@ Your list is saved in `data/wishlist.json` (kept out of git).
 
 ## Features
 
-- **Add any link:** product image, title, store, price, currency and a Buy link back to the original page.
-- **Discounts:** shows the original price struck through with the % off when a store lists one,
-  and flags price drops since you added an item.
+- **Add any link:** product photo, title, store, price, currency and a Buy link back to the original page.
+- **Price cards:** each item shows its store price on a yellow price card, with the US-dollar amount beneath.
+- **Sales:** a red SALE band shows the regular price and % off when a store lists one; items that got
+  cheaper since you added them are flagged.
+- **Domestic or Import:** for Japanese and Chinese items, choose per item whether you'll buy it
+  domestically (store price only) or import it (adds your estimates for shipping, proxy/service fee
+  and duty). Set the estimates under **Import cost estimates**.
 - **Currencies:** every price is converted to USD using daily rates from
   [ExchangeRate-API](https://www.exchangerate-api.com) (falls back to the ECB via Frankfurter).
-- **Categories and priorities:** group items like PCPartPicker's parts list, and untick an item to leave it out of the total.
+  Yen shows as ¥ and yuan as CN¥.
+- **Categories, priorities, sorting:** filter by category tabs, sort by price, priority or store, and
+  untick an item to leave it out of the total.
 - **Refresh prices:** re-check one item or the whole list for price changes.
 - **Savings plan:** pick a target month (or a monthly budget), how much you've saved and your
-  savings APY to get the monthly amount and when you can afford each item.
-- **Financing:** enter a down payment, APR and term to get the monthly payment, total interest and payoff schedule.
+  savings APY to get the monthly amount and the month you can afford each item.
+- **Financing:** enter a down payment, APR and term to get the monthly payment and total interest.
 
-## Stores that block lookups
+## Japanese and Chinese stores
 
-Some big retailers (Best Buy, Amazon outside the US, Newegg, Argos…) block automated requests, and
-some load prices with JavaScript. For those, open **"Store blocking lookups?"** in the app and drag
-the **＋ Add to Wishlist** button to your bookmarks bar. Clicking it on any product page sends that
-page, as your browser shows it, to the app. You can always edit an item and type the price in by hand.
+| Store | What the app does |
+|---|---|
+| DLsite | Reads DLsite's own product feed: sale price, regular price and cover image |
+| Toranoana, Mandarake, Hobby Search, BOOTH, Rakuten, Yahoo! Shopping and others | Reads the product page directly |
+| JD.com | Reads the title and photo; JD hides prices from signed-out visitors, so use the bookmark button while signed in or type the price |
+| Taobao, Tmall, 1688, Pinduoduo, Xianyu | Only show products to signed-in shoppers: use the bookmark button |
+| Bic Camera, Yodobashi, Amazon Japan, Mercari, Suruga-ya, AmiAmi, Melonbooks, animate | Block automated lookups: use the bookmark button (prices, sale prices and photos are then read from the page) |
+
+The full list lives in `wishlist/vendors.py`.
+
+## The Chrome extension (recommended)
+
+The `extension/` folder is a Chrome extension that adds any product page to your list, including
+stores that block automatic lookups (Bic Camera, Yodobashi, Amazon Japan, Mercari) and stores that
+only show prices when you're signed in (Taobao, Tmall, JD).
+
+Install it once:
+
+1. Open `chrome://extensions` in Chrome.
+2. Turn on **Developer mode** (top right).
+3. Click **Load unpacked** and choose the `extension` folder inside this project.
+4. Pin the yellow tag icon from the puzzle-piece menu so it stays on your toolbar.
+
+Then, with the Wishlist app running, open a product page and click the icon. It scans the page as
+your browser shows it, and shows the photo, store, price, sale and dollar amount, all editable.
+Choose Domestic or Import and click **Add to my wishlist**. If the item is already on your list,
+it updates it instead.
+
+## The bookmark button
+
+Open **"Bookmark button for stores that block lookups"** in the app and drag the **Add to Wishlist**
+button to your bookmarks bar. Clicking it on any product page sends that page, as your browser shows
+it (signed in, prices loaded), to the app. You can always edit an item and type the price in by hand.
 
 ## How it works
 
 - `server.py`: local web server and JSON API (Python standard library only)
 - `wishlist/scraper.py`: reads product data from Amazon and Shopify pages, schema.org JSON-LD,
   Open Graph/product meta tags, microdata and visible price elements
+- `wishlist/vendors.py` and `wishlist/asia.py`: Japanese and Chinese store registry and readers
 - `wishlist/rates.py`: daily USD exchange rates, cached in `data/rates.json`
 - `public/`: the web app (HTML, CSS, vanilla JavaScript)
+- `extension/`: the Chrome extension (Manifest V3; talks to the app at http://localhost:8080)

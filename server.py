@@ -21,15 +21,17 @@ from urllib.parse import parse_qs, urlencode, urlparse
 from wishlist.rates import Rates
 from wishlist.scraper import ScrapeError, check_url, extract, scrape
 from wishlist.store import Store
+from wishlist.vendors import VENDORS, vendor_for
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PUBLIC = os.path.join(ROOT, 'public')
-DATA = os.path.join(ROOT, 'data')
+DATA = os.environ.get('WISHLIST_DATA') or os.path.join(ROOT, 'data')
 
 store = Store(os.path.join(DATA, 'wishlist.json'))
 rates = Rates(os.path.join(DATA, 'rates.json'))
 
 PRIORITIES = ('high', 'medium', 'low')
+MODES = ('domestic', 'import')
 MAX_BODY = 20_000_000
 LOCAL_HOSTS = ('localhost', '127.0.0.1', '[::1]')
 HISTORY_LIMIT = 90
@@ -95,6 +97,10 @@ def clean_fields(body):
         out['include'] = bool(body['include'])
     if 'notes' in body:
         out['notes'] = str(body['notes'] or '').strip()[:1000]
+    if 'mode' in body:
+        out['mode'] = body['mode'] if body['mode'] in MODES else 'domestic'
+    if 'shipping' in body:
+        out['shipping'] = _number(body['shipping'], 'Shipping')
     return out
 
 
@@ -118,6 +124,10 @@ def new_item(fields):
         'priority': 'medium',
         'include': True,
         'notes': '',
+        'mode': 'domestic',
+        'shipping': None,
+        'country': None,
+        'vendorNative': None,
         'addedAt': now_ms(),
         'checkedAt': None,
         'lastError': None,
@@ -136,6 +146,9 @@ def apply_scrape(item, data):
     item['lastError'] = data.get('error')
     if data.get('image') and not item.get('image'):
         item['image'] = data['image']
+    for key in ('country', 'vendorNative'):
+        if data.get(key) and not item.get(key):
+            item[key] = data[key]
     if data.get('price') is None:
         return
     changed = data['price'] != item.get('price') or data['currency'] != item.get('currency')
@@ -252,7 +265,8 @@ class Handler(BaseHTTPRequestHandler):
         body = self.read_json()
         url = _http_url(body.get('url'), 'Product link', required=True)
         data = scrape(url)
-        fields = {k: data[k] for k in ('url', 'title', 'image', 'vendor', 'price', 'originalPrice', 'currency')}
+        fields = {k: data[k] for k in ('url', 'title', 'image', 'vendor', 'price', 'originalPrice', 'currency',
+                                       'country', 'vendorNative')}
         fields['image'] = fields['image'] or ''
         fields.update(clean_fields({k: v for k, v in body.items() if k != 'url'}))
         item = new_item(fields)
@@ -264,9 +278,46 @@ class Handler(BaseHTTPRequestHandler):
         fields = clean_fields(self.read_json())
         if not fields.get('url'):
             raise BadRequest('Product link is required')
+        host = urlparse(fields['url']).hostname or ''
+        known = vendor_for(host)
+        if known:
+            fields.update(country=known.country, vendorNative=known.native)
+            fields.setdefault('currency', known.currency)
         if not fields.get('vendor'):
-            fields['vendor'] = re.sub(r'^www\d?\.', '', urlparse(fields['url']).hostname or '')
+            fields['vendor'] = known.name if known else re.sub(r'^www\d?\.', '', host)
         self.send_json({'item': store.insert(new_item(fields))}, 201)
+
+    def scan_page(self):
+        """The Chrome extension sends the page it's looking at; return what we can read, without saving."""
+        body = self.read_json()
+        url = _http_url(body.get('url'), 'Page link', required=True)
+        data = extract(url, str(body.get('html') or ''), captured=True)
+        existing = next((i for i in store.items() if i['url'] in (url, data['url'])), None)
+        self.send_json({'product': data, 'existing': existing})
+
+    def add_from_extension(self):
+        """Add (or update, when the link is already on the list) an item the extension scanned."""
+        body = self.read_json()
+        fields = clean_fields(body)
+        if not fields.get('url'):
+            raise BadRequest('Product link is required')
+        known = vendor_for(urlparse(fields['url']).hostname or '')
+        if known:
+            fields.update(country=known.country, vendorNative=known.native)
+        existing = next((i for i in store.items() if i['url'] == fields['url']), None)
+        if existing:
+            def mutate(item):
+                if fields.get('price') is not None and fields['price'] != item.get('price'):
+                    item.setdefault('history', []).append(
+                        {'t': now_ms(), 'price': fields['price'], 'currency': fields.get('currency', item['currency'])})
+                    item['history'] = item['history'][-HISTORY_LIMIT:]
+                item.update(fields)
+                item['checkedAt'] = now_ms()
+                item['lastError'] = None if item.get('price') is not None else item.get('lastError')
+            return self.send_json({'item': store.update(existing['id'], mutate), 'updated': True})
+        item = new_item(fields)
+        item['checkedAt'] = now_ms()
+        self.send_json({'item': store.insert(item), 'updated': False}, 201)
 
     def update_item(self, item_id):
         fields = clean_fields(self.read_json())
@@ -317,7 +368,8 @@ class Handler(BaseHTTPRequestHandler):
             item = store.update(existing['id'], lambda it: apply_scrape(it, data))
         else:
             fields = {k: data[k] or '' for k in ('url', 'title', 'image', 'vendor', 'currency')}
-            fields.update(price=data['price'], originalPrice=data['originalPrice'])
+            fields.update(price=data['price'], originalPrice=data['originalPrice'],
+                          country=data['country'], vendorNative=data['vendorNative'])
             item = new_item(fields)
             item['checkedAt'] = now_ms()
             item['lastError'] = data.get('error')
@@ -332,6 +384,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def get_bookmarklet(self):
         self.send_json({'token': store.secret()})
+
+    def list_vendors(self):
+        self.send_json({'vendors': [
+            {'name': v.name, 'native': v.native, 'country': v.country, 'currency': v.currency,
+             'access': v.access, 'domain': v.suffix} for v in VENDORS]})
 
     def get_rates(self):
         data = rates.get()
@@ -354,16 +411,40 @@ class Handler(BaseHTTPRequestHandler):
 ROUTES = [
     (r'/api/items', {'GET': Handler.list_items, 'POST': Handler.add_item}),
     (r'/api/items/manual', {'POST': Handler.add_manual_item}),
+    (r'/api/items/from-extension', {'POST': Handler.add_from_extension}),
+    (r'/api/scan', {'POST': Handler.scan_page}),
     (r'/api/items/([\w-]+)', {'PATCH': Handler.update_item, 'DELETE': Handler.delete_item}),
     (r'/api/items/([\w-]+)/refresh', {'POST': Handler.refresh_item}),
     (r'/api/capture', {'POST': Handler.capture}),
     (r'/api/bookmarklet', {'GET': Handler.get_bookmarklet}),
     (r'/api/rates', {'GET': Handler.get_rates}),
+    (r'/api/vendors', {'GET': Handler.list_vendors}),
     (r'/api/settings', {'GET': Handler.get_settings, 'PUT': Handler.put_settings}),
 ]
 
 
+def upgrade_items():
+    """Fill in store details for items saved before the store registry existed."""
+    for item in store.items():
+        host = (urlparse(item.get('url') or '').hostname or '').lower()
+        known = vendor_for(host)
+        if 'mode' in item and (not known or item.get('country')):
+            continue
+
+        def mutate(it):
+            it.setdefault('mode', 'domestic')
+            it.setdefault('shipping', None)
+            if known:
+                it['country'] = it.get('country') or known.country
+                it['vendorNative'] = it.get('vendorNative') or known.native
+                if not it.get('vendor') or it['vendor'] == re.sub(r'^www\d?\.', '', host):
+                    it['vendor'] = known.name
+
+        store.update(item['id'], mutate)
+
+
 def main():
+    upgrade_items()
     port = int(os.environ.get('PORT') or 8080)
     server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
     url = 'http://localhost:%d' % port

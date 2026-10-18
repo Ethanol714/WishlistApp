@@ -1,6 +1,8 @@
 """Price-string parsing and currency detection."""
 import re
 
+from .vendors import vendor_for
+
 ISO_CODES = {
     'USD', 'EUR', 'GBP', 'JPY', 'CNY', 'CAD', 'AUD', 'NZD', 'CHF', 'SEK', 'NOK',
     'DKK', 'ISK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN', 'INR', 'KRW', 'BRL', 'MXN',
@@ -53,6 +55,9 @@ MONEY_RE = re.compile(r'%s\s?(?:%s)|(?:%s)\s?%s' % (_SYM_RE, _NUM_RE, _NUM_RE, _
 def host_currency(host):
     if not host:
         return None
+    known = vendor_for(host)
+    if known:
+        return known.currency
     parts = host.lower().strip('.').split('.')
     for n in (2, 1):
         if len(parts) > n:

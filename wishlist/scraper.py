@@ -18,9 +18,11 @@ from collections import deque
 from http.cookiejar import CookieJar
 from urllib.parse import parse_qs, unquote, urljoin, urlparse
 
+from . import asia
 from .htmldom import parse_html
 from .money import (detect_currency, host_currency, locale_currency,
                     money_from_text, normalize_code, parse_amount)
+from .vendors import access_help, vendor_for
 
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
@@ -393,11 +395,20 @@ def check_url(url):
 def scrape(url):
     """Fetch a product page from the server and extract its details."""
     parsed = check_url(url)
+    vendor = vendor_for(parsed.hostname)
+    if vendor and vendor.suffix in ('jd.com', 'jd.hk'):
+        # JD's desktop page is an empty shell; the mobile page has the details.
+        ex = Extractor(parsed.hostname, url)
+        masked = asia.jd_mobile(ex, url, fetch)
+        error = None if ex.price is not None else access_help(vendor, masked)
+        return _result(url, ex, error)
     try:
         status, final_url, html = fetch(url, timeout=12)
     except (urllib.error.URLError, OSError, ValueError) as e:
         reason = str(getattr(e, 'reason', e))
-        if 'timed out' in reason:
+        if vendor and vendor.access != 'open':
+            error = access_help(vendor)
+        elif 'timed out' in reason or 'reset' in reason:
             error = ("%s didn't respond. Many big stores block automated lookups: use the "
                      "Add to Wishlist bookmark on the page, or fill in the price manually." % parsed.hostname)
         else:
@@ -410,12 +421,15 @@ def extract(url, html, status=200, captured=False):
     """Pull product details out of a page's HTML.
 
     `captured` means the HTML came from the user's own browser (the bookmarklet),
-    so it is the real, fully rendered page rather than a bot-check screen.
+    so it is the real, fully rendered page rather than a bot-check or login screen.
     """
     host = (urlparse(url).hostname or '').lower()
+    vendor = vendor_for(host)
     ex = Extractor(host, url)
     doc = parse_html(html)
 
+    if vendor:
+        asia.read(ex, doc, url, html, vendor, captured, fetch)
     if '.amazon.' in '.' + host:
         ex.amazon(doc)
     if '/products/' in urlparse(url).path and ('cdn.shopify.com' in html or 'Shopify.' in html):
@@ -426,15 +440,18 @@ def extract(url, html, status=200, captured=False):
     if ex.price is None:
         ex.visible_price(doc)
     ex.nearby_original()
+    if vendor:
+        asia.list_price(ex, doc, html)
     if not ex.currency:
         html_tag = doc.select_one('html')
         ex.locale_hint = locale_currency(urlparse(url).path, html_tag.get('lang') if html_tag else None)
 
     lowered = html[:200000].lower()
     blocked = not captured and ex.price is None and (
-        status in (401, 403, 429, 503) or any(m in lowered for m in BLOCK_MARKERS))
+        status in (401, 403, 429, 503) or any(m in lowered for m in BLOCK_MARKERS)
+        or (vendor is not None and vendor.access in ('blocked', 'login')))
     if blocked:
-        ex.title = ex.image = None  # those came from the bot-check page, not the product
+        ex.title = ex.image = None  # those came from the bot-check or login page, not the product
     if not ex.title and not blocked:
         heading = doc.select_one('h1')
         heading = heading.text() if heading else ''
@@ -448,8 +465,9 @@ def extract(url, html, status=200, captured=False):
 
     error = None
     if blocked:
-        error = ('%s blocked the automatic lookup (bot protection). Open the product and click your '
-                 'Add to Wishlist bookmark, or fill in the price manually.' % host)
+        error = access_help(vendor) if vendor else (
+            '%s blocked the automatic lookup (bot protection). Open the product and click your '
+            'Add to Wishlist bookmark, or fill in the price manually.' % host)
     elif ex.price is None:
         error = "Couldn't find a price on this page. Fill it in manually."
     return _result(url, ex, error)
@@ -478,12 +496,19 @@ def _result(url, ex, error=None):
     image = ex.image
     if image:
         image = 'https:' + image if image.startswith('//') else urljoin(url, image)
-    vendor = ex.vendor or re.sub(r'^www\d?\.', '', host)
+    known = vendor_for(host)
+    vendor = known.name if known else ex.vendor or re.sub(r'^www\d?\.', '', host)
+    title = ex.title
+    if title and known:
+        for junk in known.title_junk:
+            title = junk.sub('', title).strip() or title
     return {
         'url': url,
-        'title': ex.title or title_from_url(url) or 'Item from %s' % vendor,
-        'image': image,
+        'title': title or title_from_url(url) or 'Item from %s' % vendor,
+        'image': asia.fix_image(known, image),
         'vendor': vendor,
+        'vendorNative': known.native if known else None,
+        'country': known.country if known else None,
         'price': round(ex.price, 2) if ex.price is not None else None,
         'originalPrice': round(ex.original, 2) if ex.original is not None else None,
         'currency': currency,

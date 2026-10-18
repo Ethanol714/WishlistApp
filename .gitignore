@@ -4,4 +4,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .claude/settings.local.json
-.impeccable/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/live/
+.impeccable/config.local.json
+.impeccable/hook.cache.json

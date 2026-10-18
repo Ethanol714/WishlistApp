@@ -1,0 +1,153 @@
+{
+  "title": "Choose the look for your Wishlist",
+  "question": "The roll assigned Index-Tab Stationery. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Index-Tab Stationery",
+      "kicker": "THE ROLL",
+      "lineage": "Kokuyo Campus notebooks and colored binder dividers",
+      "thesis": "Your wishlist as a well-kept binder: every category a saturated index tab, every item clean on bright white paper.",
+      "palette": ["#FFFFFF", "#1F5BD8", "#E63B2E", "#0E9F6E", "#F2B705", "#D6267A", "#1A1D24"],
+      "materials": ["bright white paper stock", "solid cover-color tabs", "Japanese mincho serif"],
+      "viewport": "Cobalt header with the dollar total set large in a classic serif; colored category tabs sit on top of the item list, each showing its subtotal; the savings plan is a side column.",
+      "risk": "If the tab colors are used timidly it collapses into a generic white dashboard.",
+      "raised": [
+        {"from": "challenger-split-flap", "raise": "Prices sit in fixed tabular columns that never shift from row to row."},
+        {"from": "challenger-botanical", "raise": "Every product photo sits at the same scale on an identical white plate."},
+        {"from": "challenger-jcard", "raise": "Each month of the savings plan is a fixed-capacity slot that items fill in order."},
+        {"from": "challenger-console", "raise": "Remove sits apart from Buy and Edit, never one slip away."}
+      ],
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "cobalt header + total", "x": 0, "y": 0, "w": 12, "h": 2, "accent": true},
+        {"label": "category tabs", "x": 0, "y": 2, "w": 8, "h": 1, "accent": true},
+        {"label": "item list", "x": 0, "y": 3, "w": 8, "h": 7},
+        {"label": "savings plan", "x": 8, "y": 2, "w": 4, "h": 8}
+      ]}
+    },
+    {
+      "id": "model-pick",
+      "label": "Electronics-Store Price Card",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Bic Camera and Yodobashi in-store price cards",
+      "thesis": "Every item gets the bright price card a Tokyo electronics store would hang under it.",
+      "palette": ["#FFFFFF", "#FFD400", "#E60012", "#0B4EA2", "#111111"],
+      "materials": ["yellow price cards", "red tax-in numerals", "white shelf edge"],
+      "viewport": "A grid of product cards, each with a yellow price card showing the yen or yuan price in big red numerals and the dollar price beneath.",
+      "risk": "The most familiar choice for this subject; loud red and yellow can tire the eye over a long list.",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "header + total", "x": 0, "y": 0, "w": 12, "h": 2, "accent": true},
+        {"label": "card", "x": 0, "y": 2, "w": 4, "h": 4},
+        {"label": "card", "x": 4, "y": 2, "w": 4, "h": 4},
+        {"label": "card", "x": 8, "y": 2, "w": 4, "h": 4},
+        {"label": "savings plan", "x": 0, "y": 6, "w": 12, "h": 4}
+      ]}
+    },
+    {
+      "id": "challenger-guidemap",
+      "label": "Garden Guide Map",
+      "verdict": "competitive",
+      "lineage": "zoo and gardens fold-out guide maps",
+      "thesis": "Flat, unshaded color fields for each category, with bright capsule buttons, on a light ground.",
+      "palette": ["#F5F1E4", "#8ED462", "#FF705D", "#2BA0FF", "#F5E211", "#2C2E2A"],
+      "materials": ["flat unmodulated color", "capsule buttons", "classic serif in place of the map's grotesk"],
+      "viewport": "Each category is a large rounded color field holding its items; the total sits on a yellow capsule.",
+      "case": "Matches light and saturated perfectly, but big color fields slow down scanning a long list.",
+      "risk": "Can read as playful rather than as a tool for money.",
+      "hero": "https://impeccable.style/worlds/cards/aww2-zoo-gardens-guide-map-hero.webp",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "header", "x": 0, "y": 0, "w": 12, "h": 1},
+        {"label": "category field", "x": 0, "y": 1, "w": 7, "h": 5, "accent": true},
+        {"label": "category field", "x": 7, "y": 1, "w": 5, "h": 5, "accent": true},
+        {"label": "plan", "x": 0, "y": 6, "w": 12, "h": 4}
+      ]}
+    },
+    {
+      "id": "challenger-split-flap",
+      "label": "Split-Flap Board",
+      "verdict": "declined",
+      "lineage": "railway departure boards",
+      "thesis": "Prices flip character by character on a black board.",
+      "palette": ["#111111", "#FFFFFF", "#F2A900"],
+      "materials": ["black flaps", "white letters"],
+      "viewport": "Items as board rows with flipping prices.",
+      "case": "Dark, which contradicts the light theme you asked for.",
+      "kept": "Fixed price columns that never move.",
+      "risk": "Dark and novelty-heavy.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse-hero.webp"
+    },
+    {
+      "id": "challenger-botanical",
+      "label": "Botanical Folio",
+      "verdict": "declined",
+      "lineage": "botanical plate books",
+      "thesis": "Items as engraved plates on cream paper.",
+      "palette": ["#F3ECDD", "#5B4636", "#2E7D32", "#C62828"],
+      "materials": ["cream plates", "sepia hairlines"],
+      "viewport": "Plates in a row, one per item.",
+      "case": "Cream and sepia are muted, not saturated.",
+      "kept": "Every photo at one fixed scale on an identical plate.",
+      "risk": "Too quiet for the brief.",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    },
+    {
+      "id": "challenger-jcard",
+      "label": "Cassette J-Card",
+      "verdict": "declined",
+      "lineage": "mixtape inlay cards",
+      "thesis": "Your list as a hand-ruled tracklist.",
+      "palette": ["#FFFFFF", "#1E3A8A", "#C8102E"],
+      "materials": ["ballpoint ink", "lined inlay stock"],
+      "viewport": "Side A and side B tracklists.",
+      "case": "Handwriting hurts number legibility.",
+      "kept": "Fixed capacity per side: each month is a slot items fill.",
+      "risk": "Costume over function.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-cassette-j-card-hero.webp"
+    },
+    {
+      "id": "challenger-console",
+      "label": "Developer Console",
+      "verdict": "declined",
+      "lineage": "dark-first code tools",
+      "thesis": "Graphite panels divided by hairlines.",
+      "palette": ["#16181D", "#2A2E36", "#7AA2F7"],
+      "materials": ["graphite", "hairline seams"],
+      "viewport": "Tiled panels.",
+      "case": "Dark, which contradicts the light theme you asked for.",
+      "kept": "Destructive actions set apart.",
+      "risk": "Wrong theme.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-dark-first-developer-console-hero.webp"
+    },
+    {
+      "id": "challenger-timetable",
+      "label": "Timetable Slide Rack",
+      "verdict": "declined",
+      "lineage": "1970s pocket airline timetables",
+      "thesis": "One type size, rank by weight and case.",
+      "palette": ["#E2B53B", "#1F1F1F", "#F4EEDC", "#C8321E"],
+      "materials": ["goldenrod light table", "tinted glass"],
+      "viewport": "A raked rack of slides.",
+      "case": "The tilted layout makes prices harder to scan.",
+      "kept": "A tight type scale.",
+      "risk": "Hard to read numbers.",
+      "hero": "https://impeccable.style/worlds/cards/rw-timetable-slide-rack-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": false},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean white shopping-list table with one blue accent, executed carefully.",
+    "palette": ["#FFFFFF", "#111827", "#2563EB"],
+    "materials": ["clean grid", "product photos"],
+    "viewport": "Header, a sortable item table, totals and plan below.",
+    "risk": "Looks like every other price tracker.",
+    "wireframe": {"cols": 12, "rows": 10, "regions": [
+      {"label": "header", "x": 0, "y": 0, "w": 12, "h": 1},
+      {"label": "item table", "x": 0, "y": 1, "w": 12, "h": 6},
+      {"label": "plan", "x": 0, "y": 7, "w": 12, "h": 3}
+    ]}
+  },
+  "steer": true
+}

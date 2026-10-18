@@ -7,22 +7,27 @@ const ICON = {
   refresh: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>',
   edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
   trash: '<svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg>',
-  ok: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>',
-  warn: '<svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg>',
+  out: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+  down: '<svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></svg>',
+  alert: '<svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg>',
 };
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
-const PRIORITY_LABEL = { high: 'High priority', medium: 'Medium', low: 'Low priority' };
-const COMMON_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CNY', 'KRW', 'INR', 'CHF', 'MXN', 'HKD', 'SGD', 'TWD'];
+const COMMON_CURRENCIES = ['JPY', 'CNY', 'USD', 'HKD', 'TWD', 'KRW', 'EUR', 'GBP', 'CAD', 'AUD', 'SGD'];
+const COUNTRY_LABEL = { JP: 'JP', CN: 'CN' };
 
 const state = {
   items: [],
+  vendors: [],
   rates: null,
+  ratesError: null,
   settings: null,
   pending: [],
   refreshing: new Set(),
   highlight: null,
   editing: null,
+  tab: 'all',
+  sort: 'newest',
 };
 
 // ---------------------------------------------------------------- helpers
@@ -37,31 +42,44 @@ function safeUrl(u) {
     return '';
   }
 }
-
 function hostOf(u) {
   try { return new URL(u).hostname.replace(/^www\d?\./, ''); } catch { return ''; }
 }
-
 const num = (v) => { const n = parseFloat(v); return Number.isFinite(n) ? n : 0; };
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 const formatters = new Map();
-function money(n, cur = 'USD', whole = false) {
-  if (n == null || !Number.isFinite(n)) return '—';
+function formatter(cur, whole) {
   const key = cur + (whole ? ':w' : '');
   if (!formatters.has(key)) {
     try {
       formatters.set(key, new Intl.NumberFormat('en-US', {
         style: 'currency', currency: cur,
+        currencyDisplay: cur === 'JPY' || cur === 'USD' ? 'narrowSymbol' : 'symbol',
         ...(whole ? { minimumFractionDigits: 0, maximumFractionDigits: 0 } : {}),
       }));
     } catch {
       formatters.set(key, null);
     }
   }
-  const f = formatters.get(key);
-  return f ? f.format(n) : `${n.toFixed(2)} ${cur}`;
+  return formatters.get(key);
 }
 
+// A price-card figure: small currency sign, big digits, like a store price card.
+function bigPrice(n, cur) {
+  const f = formatter(cur, cur !== 'USD' && Number.isInteger(n));
+  if (!f) return esc(money(n, cur));
+  return f.formatToParts(n).map((p) => (p.type === 'currency' ? `<span class="cur">${esc(p.value)}</span>` : esc(p.value))).join('');
+}
+
+function money(n, cur = 'USD', whole = false) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  // Store prices in foreign currencies are usually whole numbers; drop a meaningless ".00".
+  if (cur !== 'USD' && Number.isInteger(n)) whole = true;
+  // Yen and yuan share "¥": yen shows as ¥ and yuan as CN¥ so they can't be confused.
+  const f = formatter(cur, whole);
+  return f ? f.format(n) : `${n.toFixed(2)} ${cur}`;
+}
 const rateText = (x) => (x >= 0.01 ? x.toFixed(4).replace(/0{1,2}$/, '') : Number(x.toPrecision(3)).toString());
 
 const monthValue = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -90,7 +108,10 @@ function timeAgo(ms) {
 function defaultSettings() {
   const d = new Date();
   d.setMonth(d.getMonth() + 12);
-  return { mode: 'save', planBy: 'date', goalMonth: monthValue(d), saved: '0', apy: '0', budget: '250', down: '0', apr: '9.99', term: '12' };
+  return {
+    mode: 'save', planBy: 'date', goalMonth: monthValue(d), saved: '0', apy: '0', budget: '250',
+    down: '0', apr: '9.99', term: '12', importShipping: '30', importFeePct: '5', importDutyPct: '10',
+  };
 }
 
 async function api(path, { method = 'GET', body } = {}) {
@@ -104,7 +125,7 @@ async function api(path, { method = 'GET', body } = {}) {
   return data;
 }
 
-function toast(message, kind = 'info', ms = 4200) {
+function toast(message, kind = 'info', ms = 4500) {
   const el = document.createElement('div');
   el.className = `toast ${kind}`;
   el.textContent = message;
@@ -121,41 +142,54 @@ function toUSD(amount, cur) {
   return r ? amount / r : null;
 }
 
+const canImport = (it) => Boolean(it.country) || (it.currency && it.currency !== 'USD');
+
 function derive(it) {
   const usd = toUSD(it.price, it.currency);
-  const lineUSD = usd != null ? usd * it.qty : null;
+  const goods = usd != null ? usd * it.qty : null;
   const discount = it.price != null && it.originalPrice > it.price
-    ? { amount: it.originalPrice - it.price, pct: (1 - it.price / it.originalPrice) * 100 }
+    ? { pct: (1 - it.price / it.originalPrice) * 100 }
     : null;
   const origUSD = discount ? toUSD(it.originalPrice, it.currency) : null;
   const firstSeen = it.history?.[0];
   const drop = !discount && it.price != null && it.addedPrice > it.price && (!firstSeen || firstSeen.currency === it.currency)
     ? (1 - it.price / it.addedPrice) * 100
     : null;
-  return { usd, lineUSD, discount, discountUSD: origUSD != null && usd != null ? (origUSD - usd) * it.qty : 0, drop };
+
+  let importCost = 0;
+  if (goods != null && it.mode === 'import' && canImport(it)) {
+    const s = state.settings;
+    const shipping = it.shipping != null ? it.shipping : num(s.importShipping);
+    const fee = goods * num(s.importFeePct) / 100;
+    const duty = (goods + shipping) * num(s.importDutyPct) / 100;
+    importCost = shipping + fee + duty;
+  }
+  return {
+    usd,
+    goods,
+    importCost,
+    landed: goods != null ? goods + importCost : null,
+    discount,
+    saving: origUSD != null && usd != null ? (origUSD - usd) * it.qty : 0,
+    drop,
+  };
 }
 
 function totals() {
-  let total = 0, savings = 0, count = 0, missing = 0;
+  let goods = 0, imports = 0, savings = 0, count = 0, missing = 0, unrated = 0;
   const stores = new Set();
   for (const it of state.items) {
     if (!it.include) continue;
     const d = derive(it);
     count += it.qty;
     stores.add((it.vendor || hostOf(it.url)).toLowerCase());
-    if (d.lineUSD == null) { missing++; continue; }
-    total += d.lineUSD;
-    savings += d.discountUSD;
+    if (it.price == null) { missing++; continue; }
+    if (d.goods == null) { unrated++; continue; }
+    goods += d.goods;
+    imports += d.importCost;
+    savings += d.saving;
   }
-  return { total, savings, count, missing, stores: stores.size };
-}
-
-function timelineItems() {
-  return state.items
-    .filter((it) => it.include)
-    .map((it) => ({ it, lineUSD: derive(it).lineUSD }))
-    .filter((x) => x.lineUSD != null)
-    .sort((a, b) => (PRIORITY_RANK[a.it.priority] ?? 1) - (PRIORITY_RANK[b.it.priority] ?? 1) || a.lineUSD - b.lineUSD);
+  return { goods, imports, total: goods + imports, savings, count, missing, unrated, stores: stores.size };
 }
 
 function computePlan() {
@@ -169,7 +203,6 @@ function computePlan() {
     const monthly = principal === 0 ? 0 : r ? (principal * r) / (1 - Math.pow(1 + r, -n)) : principal / n;
     return { mode: 'finance', goal, down, principal, monthly, months: n, interest: monthly * n - principal, end: addMonths(n) };
   }
-
   const saved = num(s.saved);
   const r = num(s.apy) / 1200;
   let monthly, months;
@@ -181,181 +214,199 @@ function computePlan() {
     if (months > 1200) months = null;
   } else {
     months = monthsUntil(s.goalMonth);
-    if (months < 1) return { mode: 'save', goal, error: 'Pick a target month after this one.' };
+    if (months < 1) return { mode: 'save', goal, error: 'Pick a month after this one.' };
     const remaining = Math.max(0, goal - saved * Math.pow(1 + r, months));
     monthly = remaining === 0 ? 0 : r ? (remaining * r) / (Math.pow(1 + r, months) - 1) : remaining / months;
   }
-  const contributed = saved + monthly * (months || 0);
   return {
     mode: 'save', goal, saved, monthly, months,
     end: months != null ? addMonths(months) : null,
-    interest: months ? Math.max(0, goal - contributed) : 0,
     timeline: buildTimeline(saved, monthly, r),
   };
 }
 
 function buildTimeline(saved, monthly, r) {
+  const items = state.items
+    .filter((it) => it.include)
+    .map((it) => ({ it, cost: derive(it).landed }))
+    .filter((x) => x.cost != null)
+    .sort((a, b) => (PRIORITY_RANK[a.it.priority] ?? 1) - (PRIORITY_RANK[b.it.priority] ?? 1) || a.cost - b.cost);
   let bal = saved, m = 0, cum = 0;
-  return timelineItems().map(({ it, lineUSD }) => {
-    cum += lineUSD;
+  return items.map(({ it, cost }) => {
+    cum += cost;
     while (bal < cum - 0.005 && m < 1200) { m++; bal = bal * (1 + r) + monthly; }
-    return { it, lineUSD, cum, month: bal >= cum - 0.005 ? m : null };
+    return { it, cost, month: bal >= cum - 0.005 ? m : null };
   });
 }
 
 // ---------------------------------------------------------------- rendering
 
-function thumbHTML(it) {
+function initial(it) {
+  return esc(((it.vendor || hostOf(it.url) || '?')[0] || '?').toUpperCase());
+}
+function plateHTML(it) {
   const img = safeUrl(it.image);
-  const letter = esc(((it.vendor || hostOf(it.url) || '?')[0] || '?').toUpperCase());
   return img
-    ? `<img src="${esc(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-letter="${letter}">`
-    : `<span class="thumb-ph">${letter}</span>`;
+    ? `<img src="${esc(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-letter="${initial(it)}">`
+    : `<span class="ph">${initial(it)}</span>`;
 }
 
-function rowHTML(it) {
+function priceCardHTML(it, d) {
+  if (it.price == null) {
+    return `<div class="pricecard"><div class="pc-empty">
+      <strong>Price needed</strong>
+      <span>${esc(it.lastError ? 'This store didn’t share its price.' : 'Add the price to include it.')}</span>
+      <button type="button" class="btn btn-quiet" data-act="edit">Add price</button>
+    </div></div>`;
+  }
+  const rate = it.currency !== 'USD' ? state.rates?.rates?.[it.currency] : null;
+  let html = '<div class="pricecard">';
+  if (d.discount) {
+    html += `<div class="sale-band"><span>SALE −${Math.round(d.discount.pct)}%</span><s>${money(it.originalPrice, it.currency)}</s></div>`;
+  }
+  html += `<div class="pc-main">
+    <div class="pc-price"><span class="yen">${bigPrice(it.price, it.currency)}</span>${it.qty > 1 ? `<span class="pc-qty">× ${it.qty}</span>` : ''}</div>`;
+  if (it.currency !== 'USD') {
+    html += d.usd == null
+      ? `<div class="pc-usd"><span>${state.rates || state.ratesError ? `No exchange rate for ${esc(it.currency)}` : 'Converting to USD…'}</span></div>`
+      : `<div class="pc-usd"><strong>${money(d.goods)}</strong>${rate ? `<small>1 ${esc(it.currency)} = $${rateText(1 / rate)}</small>` : ''}</div>`;
+  }
+  if (d.drop >= 0.5) {
+    html += `<span class="pc-drop" title="Was ${money(it.addedPrice, it.currency)} when you added it">${ICON.down}${Math.round(d.drop) || '<1'}% since added</span>`;
+  }
+  html += '</div>';
+  if (canImport(it)) {
+    const imp = it.mode === 'import';
+    html += `<div class="buyway" role="group" aria-label="How you'll buy it">
+      <button type="button" data-mode="domestic" aria-pressed="${!imp}">Domestic</button>
+      <button type="button" data-mode="import" aria-pressed="${imp}">Import</button>
+    </div>`;
+    if (imp && d.landed != null) {
+      html += `<div class="landed"><span>+${money(d.importCost)} import, est.</span><strong>≈ ${money(d.landed)} landed</strong></div>`;
+    }
+  }
+  return html + '</div>';
+}
+
+function cardHTML(it) {
   const d = derive(it);
   const href = safeUrl(it.url);
-  const host = hostOf(it.url);
   const busy = state.refreshing.has(it.id);
-  const rate = it.currency !== 'USD' ? state.rates?.rates?.[it.currency] : null;
-
   const tags = [];
-  if (it.category) tags.push(`<span class="tag cat">${esc(it.category)}</span>`);
-  if (it.priority !== 'medium') tags.push(`<span class="tag prio-${esc(it.priority)}">${PRIORITY_LABEL[it.priority] || ''}</span>`);
-  if (it.price == null) tags.push(`<span class="tag warn" title="${esc(it.lastError || '')}">Needs a price</span>`);
-  else if (it.lastError) tags.push(`<span class="tag warn" title="${esc(it.lastError)}">Couldn't auto-update</span>`);
-  if (it.notes) tags.push(`<span class="item-note" title="${esc(it.notes)}">${esc(it.notes)}</span>`);
+  if (it.priority === 'high') tags.push('<span class="tag high">High priority</span>');
+  if (it.category) tags.push(`<span class="tag">${esc(it.category)}</span>`);
+  if (it.price != null && it.lastError) tags.push(`<span class="tag warn" title="${esc(it.lastError)}">Couldn't auto-update</span>`);
+  if (it.notes) tags.push(`<span class="tag note" title="${esc(it.notes)}">${esc(it.notes)}</span>`);
+  const country = COUNTRY_LABEL[it.country];
+  const native = it.vendorNative && it.vendorNative !== it.vendor ? `<small>${esc(it.vendorNative)}</small>` : '';
 
-  let price;
-  if (it.price == null) {
-    price = '<button type="button" class="link-btn" data-act="edit">Add price</button>';
-  } else {
-    price = `<div class="price">${money(it.price, it.currency)}</div>`;
-    if (d.discount) {
-      price += `<div class="was"><s>${money(it.originalPrice, it.currency)}</s><span class="tag sale">−${Math.round(d.discount.pct)}%</span></div>`;
-    } else if (d.drop >= 0.5) {
-      price += `<div class="was"><span class="tag drop" title="Was ${money(it.addedPrice, it.currency)} when you added it">↓ ${Math.round(d.drop) || '<1'}% since added</span></div>`;
-    }
-  }
-
-  let usd;
-  if (it.price == null) usd = '<span class="muted">—</span>';
-  else if (d.usd == null) usd = `<span class="tag warn" title="No exchange rate for ${esc(it.currency)}">No rate</span>`;
-  else {
-    usd = `<div class="price">${money(d.lineUSD)}</div>`;
-    if (it.qty > 1) usd += `<div class="sub">${money(d.usd)} each</div>`;
-    if (rate) usd += `<div class="sub">1 ${esc(it.currency)} = $${rateText(1 / rate)}</div>`;
-  }
-
-  const rowClass = ['item', it.include ? '' : 'excluded', state.highlight === it.id ? 'flash' : ''].join(' ');
-  return `<tr class="${rowClass}" data-id="${esc(it.id)}">
-    <td class="c-check"><input type="checkbox" class="inc" ${it.include ? 'checked' : ''} title="Include in totals" aria-label="Include in totals"></td>
-    <td class="c-item"><div class="item-cell">
-      <a class="thumb" href="${esc(href)}" target="_blank" rel="noopener noreferrer" tabindex="-1">${thumbHTML(it)}</a>
-      <div class="item-meta">
-        <a class="item-title" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(it.title)}">${esc(it.title)}</a>
-        ${tags.length ? `<div class="item-sub">${tags.join('')}</div>` : ''}
-      </div>
-    </div></td>
-    <td class="c-store" data-label="Store"><span class="store">${host ? `<img class="fav" src="https://${esc(host)}/favicon.ico" alt="" referrerpolicy="no-referrer">` : ''}<span title="${esc(it.vendor)}">${esc(it.vendor || host)}</span></span></td>
-    <td class="c-price num" data-label="Price">${price}</td>
-    <td class="c-usd num" data-label="In USD">${usd}</td>
-    <td class="c-qty num" data-label="Qty"><input class="qty" type="number" min="1" max="999" step="1" value="${it.qty}" aria-label="Quantity"></td>
-    <td class="c-buy"><a class="btn btn-buy btn-buy-sm" href="${esc(href)}" target="_blank" rel="noopener noreferrer">Buy</a></td>
-    <td class="c-act">
-      <button type="button" class="icon-btn ${busy ? 'spinning' : ''}" data-act="refresh" title="Refresh price (checked ${timeAgo(it.checkedAt)})" aria-label="Refresh price">${ICON.refresh}</button>
+  return `<article class="card ${it.include ? '' : 'excluded'} ${state.highlight === it.id ? 'flash' : ''}" data-id="${esc(it.id)}">
+    <a class="plate" href="${esc(href)}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">${plateHTML(it)}</a>
+    <div class="card-top">
+      ${country ? `<span class="flag ${it.country === 'CN' ? 'cn' : ''}"><b>${country}</b>${it.country === 'CN' ? 'China' : 'Japan'}</span>` : '<span></span>'}
+      <label class="include" title="Include in total"><input type="checkbox" class="inc" ${it.include ? 'checked' : ''} aria-label="Include in total"></label>
+    </div>
+    <div class="card-info">
+      <div class="store"><span>${esc(it.vendor || hostOf(it.url))}</span>${native}</div>
+      <a class="title" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(it.title)}">${esc(it.title)}</a>
+      ${tags.length ? `<div class="tags">${tags.join('')}</div>` : ''}
+    </div>
+    ${priceCardHTML(it, d)}
+    <div class="card-foot">
+      <label class="qty" title="Quantity"><span>Qty</span><input class="qty-in" type="number" min="1" max="999" step="1" value="${it.qty}" aria-label="Quantity"></label>
+      <a class="btn btn-blue" href="${esc(href)}" target="_blank" rel="noopener noreferrer">Buy ${ICON.out}</a>
+      <button type="button" class="icon-btn ${busy ? 'spin' : ''}" data-act="refresh" title="Check price again (last checked ${timeAgo(it.checkedAt)})" aria-label="Check price again">${ICON.refresh}</button>
       <button type="button" class="icon-btn" data-act="edit" title="Edit" aria-label="Edit">${ICON.edit}</button>
-      <button type="button" class="icon-btn danger" data-act="delete" title="Remove" aria-label="Remove">${ICON.trash}</button>
-    </td>
-  </tr>`;
+      <span class="foot-sep" aria-hidden="true"></span>
+      <button type="button" class="icon-btn danger" data-act="delete" title="Remove from wishlist" aria-label="Remove from wishlist">${ICON.trash}</button>
+    </div>
+  </article>`;
 }
 
-function pendingRowHTML(p) {
-  return `<tr class="pending"><td class="c-check"></td><td colspan="7"><div class="item-cell">
-    <span class="thumb skeleton"></span>
-    <div class="item-meta"><div class="item-title">Looking up ${esc(p.host || 'product')}…</div>
-    <div class="item-sub"><span class="spinner"></span> Getting the picture, price and any discounts</div></div>
-  </div></td></tr>`;
+function pendingHTML(p) {
+  return `<article class="card skeleton" aria-busy="true">
+    <div class="plate"></div>
+    <div class="card-info"><div class="store"><span>${esc(p.host || 'Store')}</span></div>
+      <div class="loading-line"><span class="spinner"></span>Getting the photo, price and any sale…</div></div>
+    <div class="pricecard"><div class="pc-main"><span class="yen">&nbsp;</span></div></div>
+    <div class="card-foot"></div>
+  </article>`;
 }
 
-function renderList() {
-  const items = [...state.items].sort((a, b) => b.addedAt - a.addedAt);
-  const groups = new Map();
-  for (const it of items) {
-    const key = it.category || '';
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(it);
-  }
-  const keys = [...groups.keys()].sort((a, b) => (a === '' ? 1 : b === '' ? -1 : a.localeCompare(b)));
-  const showGroups = keys.length > 1;
+function sortedItems() {
+  let items = [...state.items];
+  if (state.tab !== 'all') items = items.filter((it) => (it.category || '') === state.tab);
+  const landed = (it) => derive(it).landed ?? -1;
+  const by = {
+    newest: (a, b) => b.addedAt - a.addedAt,
+    priority: (a, b) => (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1) || b.addedAt - a.addedAt,
+    high: (a, b) => landed(b) - landed(a),
+    low: (a, b) => (landed(a) < 0) - (landed(b) < 0) || landed(a) - landed(b),
+    store: (a, b) => (a.vendor || '').localeCompare(b.vendor || '') || b.addedAt - a.addedAt,
+  }[state.sort];
+  return items.sort(by);
+}
 
-  let html = state.pending.map(pendingRowHTML).join('');
-  for (const key of keys) {
-    const list = groups.get(key);
-    if (showGroups) {
-      const subtotal = list.reduce((sum, it) => sum + (it.include ? derive(it).lineUSD || 0 : 0), 0);
-      html += `<tr class="group"><th colspan="8"><div class="group-inner">
-        <span class="group-name">${esc(key || 'Uncategorized')}</span><span class="group-count">${list.length}</span>
-        <span class="group-total">${money(subtotal)}</span></div></th></tr>`;
-    }
-    html += list.map(rowHTML).join('');
-  }
-  $('#rows').innerHTML = html;
+function renderTabs() {
+  const cats = new Map();
+  for (const it of state.items) cats.set(it.category || '', (cats.get(it.category || '') || 0) + 1);
+  const named = [...cats.keys()].filter(Boolean).sort((a, b) => a.localeCompare(b));
+  if (state.tab !== 'all' && !cats.has(state.tab)) state.tab = 'all';
+  const tab = (id, label, count) =>
+    `<button type="button" class="tab" role="tab" data-tab="${esc(id)}" aria-selected="${state.tab === id}">${esc(label)} <span class="count">${count}</span></button>`;
+  let html = tab('all', 'All items', state.items.length);
+  for (const c of named) html += tab(c, c, cats.get(c));
+  if (named.length && cats.has('')) html += tab('', 'No category', cats.get(''));
+  $('#tabs').innerHTML = state.items.length ? html : '';
+}
 
-  const hasRows = items.length > 0 || state.pending.length > 0;
-  $('#empty').hidden = hasRows;
-  $('.parts thead').style.visibility = hasRows ? '' : 'hidden';
-  $('#refreshAll').hidden = items.length === 0;
+function renderShelf() {
+  renderTabs();
+  const items = sortedItems();
+  $('#grid').innerHTML = state.pending.map(pendingHTML).join('') + items.map(cardHTML).join('');
+  const empty = !state.items.length && !state.pending.length;
+  $('#empty').hidden = !empty;
+  $('#grid').hidden = empty;
+  $('.shelf-bar').hidden = empty;
 
   const t = totals();
-  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
-  let foot = '';
-  if (items.length) {
-    foot += `<tr class="total-row"><td colspan="4" class="total-label">Total <span class="muted">${plural(t.count, 'item')} from ${plural(t.stores, 'store')}</span></td>
-      <td class="num total-val">${money(t.total)}</td><td colspan="3"></td></tr>`;
-    if (t.savings > 0.005) {
-      foot += `<tr class="savings-row"><td colspan="4" class="total-label">Sale discounts</td><td class="num">−${money(t.savings)}</td><td colspan="3"></td></tr>`;
-    }
-  }
-  $('#foot').innerHTML = foot;
+  const notes = [];
+  if (t.missing) notes.push(`${plural(t.missing, 'item')} ${t.missing === 1 ? 'needs' : 'need'} a price before ${t.missing === 1 ? 'it counts' : 'they count'} toward your total.`);
+  if (t.unrated && (state.rates || state.ratesError)) notes.push(`${plural(t.unrated, 'item')} ${t.unrated === 1 ? 'uses a currency' : 'use currencies'} without an exchange rate.`);
+  $('#notice').innerHTML = notes.length ? `<div class="notice">${ICON.alert}<span>${notes.join(' ')}</span></div>` : '';
 
   $('#categoryList').innerHTML = [...new Set(state.items.map((i) => i.category).filter(Boolean))]
     .map((c) => `<option value="${esc(c)}"></option>`).join('');
 }
 
-function renderSummary() {
+function renderRegister() {
   const t = totals();
-  const plan = computePlan();
-  if (!state.items.length) { $('#summary').innerHTML = ''; return; }
-
-  const unpriced = state.items.filter((it) => it.include && it.price == null).length;
-  const unrated = t.missing - unpriced;
-  let strip;
-  if (unpriced || unrated) {
-    const parts = [];
-    if (unpriced) parts.push(`<b>${unpriced}</b> item${unpriced === 1 ? '' : 's'} need${unpriced === 1 ? 's' : ''} a price. Click <b>Add price</b> to fill ${unpriced === 1 ? 'it' : 'them'} in`);
-    if (unrated) parts.push(`<b>${unrated}</b> item${unrated === 1 ? ' has a currency' : 's have currencies'} without an exchange rate`);
-    strip = `<div class="strip warn">${ICON.warn}<span>${parts.join('. ')}. They're left out of the total.</span></div>`;
-  } else {
-    const disc = state.items.filter((it) => it.include && derive(it).discount).length;
-    strip = `<div class="strip ok">${ICON.ok}<span>All ${t.count === 1 ? '' : t.count + ' '}item${t.count === 1 ? '' : 's'} priced and converted to USD${disc ? `. <b>${disc}</b> ${disc === 1 ? 'is' : 'are'} on sale right now` : ''}.</span></div>`;
+  const rows = [
+    `<div><dt>${plural(t.count, 'item')} from ${plural(t.stores, 'store')}</dt><dd>${money(t.goods)}</dd></div>`,
+  ];
+  if (t.savings > 0.005) rows.push(`<div class="save"><dt>Sale savings included</dt><dd>−${money(t.savings)}</dd></div>`);
+  if (t.imports > 0.005) rows.push(`<div><dt>Import costs<small>Your estimates for shipping, fees, duty</small></dt><dd>+${money(t.imports)}</dd></div>`);
+  if (converting()) {
+    rows.length = 0;
+    rows.push(`<div><dt>${plural(t.count, 'item')} from ${plural(t.stores, 'store')}</dt><dd>Converting…</dd></div>`);
+    rows.push('<div class="total"><dt>Total in USD</dt><dd>…</dd></div>');
+    $('#receipt').innerHTML = rows.join('');
+    $('#mobileTotal').hidden = true;
+    return;
   }
+  rows.push(`<div class="total"><dt>Total in USD${t.imports > 0.005 ? '<small>includes import estimates</small>' : ''}</dt><dd>${money(t.total)}</dd></div>`);
+  $('#receipt').innerHTML = rows.join('');
 
-  let planStat;
-  if (plan.error) planStat = `<span class="stat-value">—</span><span class="stat-sub">${esc(plan.error)}</span>`;
-  else if (plan.mode === 'finance') planStat = `<span class="stat-value">${money(plan.monthly)}<small>/mo</small></span><span class="stat-sub">financed over ${plan.months} months</span>`;
-  else if (plan.months == null) planStat = `<span class="stat-value">${money(plan.monthly)}<small>/mo</small></span><span class="stat-sub">isn't enough to reach the goal</span>`;
-  else planStat = `<span class="stat-value">${money(plan.monthly)}<small>/mo</small></span><span class="stat-sub">${plan.months ? `for ${plan.months} month${plan.months === 1 ? '' : 's'}` : 'you already have enough'}</span>`;
+  const plan = computePlan();
+  const mt = $('#mobileTotal');
+  mt.hidden = !state.items.length;
+  const per = plan.error ? '' : `${money(plan.monthly)}/mo ${plan.mode === 'finance' ? 'financed' : 'to save'}`;
+  mt.innerHTML = `<div><strong>${money(t.total)}</strong><span>${per}</span></div><a href="#plan">See plan</a>`;
+}
 
-  const doneBy = plan.error || plan.end == null ? '—' : plan.mode === 'save' && plan.months === 0 ? 'Now' : monthLabel(plan.end);
-  $('#summary').innerHTML = `${strip}
-    <div class="stats">
-      <div class="stat accent"><span class="stat-label">Wishlist total</span><span class="stat-value">${money(t.total)}</span><span class="stat-sub">${t.count} item${t.count === 1 ? '' : 's'} · ${t.stores} store${t.stores === 1 ? '' : 's'}</span></div>
-      <div class="stat good"><span class="stat-label">Sale savings</span><span class="stat-value">${money(t.savings)}</span><span class="stat-sub">vs. regular prices</span></div>
-      <div class="stat"><span class="stat-label">${plan.mode === 'finance' ? 'Monthly payment' : 'Save each month'}</span>${planStat}</div>
-      <div class="stat"><span class="stat-label">${plan.mode === 'finance' ? 'Paid off by' : 'Goal reached'}</span><span class="stat-value">${doneBy}</span><span class="stat-sub"><a href="#plan">Adjust plan →</a></span></div>
-    </div>`;
+// True while exchange rates are still loading and some prices can't be converted yet.
+function converting() {
+  return !state.rates && !state.ratesError && state.items.some((it) => it.include && it.price != null && it.currency !== 'USD');
 }
 
 function renderPlan() {
@@ -363,112 +414,80 @@ function renderPlan() {
   const root = $('#plan');
   root.dataset.mode = s.mode;
   root.dataset.planby = s.planBy;
-  $$('[data-mode]', root).forEach((b) => b.tagName === 'BUTTON' && b.setAttribute('aria-selected', String(b.dataset.mode === s.mode)));
-  $$('[data-planby]', root).forEach((b) => b.tagName === 'BUTTON' && b.setAttribute('aria-selected', String(b.dataset.planby === s.planBy)));
+  $$('button[data-mode]', root).forEach((b) => b.setAttribute('aria-selected', String(b.dataset.mode === s.mode)));
+  $$('button[data-planby]', root).forEach((b) => b.setAttribute('aria-selected', String(b.dataset.planby === s.planBy)));
 
   const plan = computePlan();
   const result = $('#planResult');
-  const timeline = $('#timeline');
+  const months = $('#months');
+  months.innerHTML = '';
 
-  if (!state.items.length || plan.goal <= 0) {
-    result.innerHTML = `<div class="result-label">${s.mode === 'finance' ? 'Monthly payment' : 'Save each month'}</div>
-      <div class="result-big">$0<small>/mo</small></div>
-      <div class="result-sub">Add items with prices to your wishlist to build a plan.</div>`;
-    timeline.innerHTML = '';
+  if (converting()) {
+    result.innerHTML = '<div class="big">…</div><p>Converting prices to US dollars…</p>';
+    return;
+  }
+  if (plan.goal <= 0) {
+    result.innerHTML = `<div class="big">$0<small>/mo</small></div><p>Add items with prices and this shows what to put aside each month.</p>`;
     return;
   }
   if (plan.error) {
-    result.innerHTML = `<div class="plan-error">${esc(plan.error)}</div>`;
-    timeline.innerHTML = '';
+    result.innerHTML = `<div class="big">—</div><p>${esc(plan.error)}</p>`;
     return;
   }
-
   if (plan.mode === 'finance') {
-    result.innerHTML = `<div class="result-label">Monthly payment</div>
-      <div class="result-big">${money(plan.monthly)}<small>/mo</small></div>
-      <div class="result-sub">for <b>${plan.months} months</b> at ${num(s.apr)}% APR. Your last payment is in <b>${monthLabel(plan.end)}</b>.</div>
-      <dl class="facts">
-        <div><dt>Wishlist total</dt><dd>${money(plan.goal)}</dd></div>
-        <div><dt>Down payment</dt><dd>${money(plan.down)}</dd></div>
-        <div><dt>Amount financed</dt><dd>${money(plan.principal)}</dd></div>
-        <div><dt>Interest paid</dt><dd>${money(plan.interest)}</dd></div>
-        <div><dt>Total cost</dt><dd>${money(plan.goal + plan.interest)}</dd></div>
-      </dl>`;
-    timeline.innerHTML = financeScheduleHTML(plan, num(s.apr) / 1200);
+    result.innerHTML = `<div class="big">${money(plan.monthly)}<small>/month</small></div>
+      <p>for <b>${plan.months} months</b> at ${num(s.apr)}% APR. You'd pay <b>${money(plan.interest)}</b> in interest, ${money(plan.goal + plan.interest)} in all, finishing in <b>${monthLabel(plan.end)}</b>.</p>`;
     return;
   }
+  let line;
+  if (plan.months == null) line = `At ${money(plan.monthly)} a month you won't reach ${money(plan.goal)}. Try a bigger amount.`;
+  else if (plan.months === 0) line = `You've already saved enough to buy everything.`;
+  else line = `for <b>${plural(plan.months, 'month')}</b> to have <b>${money(plan.goal)}</b> by <b>${monthLabel(plan.end)}</b>.`;
+  result.innerHTML = `<div class="big">${money(plan.monthly)}<small>/month</small></div><p>${line}</p>`;
 
-  const pct = plan.goal ? Math.min(100, (plan.saved / plan.goal) * 100) : 0;
-  let sub;
-  if (plan.months == null) sub = `At ${money(plan.monthly)} a month you won't reach ${money(plan.goal)}. Try a bigger monthly amount.`;
-  else if (plan.months === 0) sub = `You've already saved enough to buy everything on your list.`;
-  else sub = `for <b>${plan.months} month${plan.months === 1 ? '' : 's'}</b> to have <b>${money(plan.goal)}</b> by <b>${monthLabel(plan.end)}</b>.`;
-  result.innerHTML = `<div class="result-label">Save each month</div>
-    <div class="result-big">${money(plan.monthly)}<small>/mo</small></div>
-    <div class="result-sub">${sub}</div>
-    <div><div class="bar"><span style="width:${pct.toFixed(1)}%"></span></div>
-      <div class="bar-caption"><span>${money(plan.saved)} saved</span><span>${pct.toFixed(0)}% of ${money(plan.goal, 'USD', true)}</span></div></div>
-    <dl class="facts">
-      <div><dt>Goal</dt><dd>${money(plan.goal)}</dd></div>
-      <div><dt>Still needed</dt><dd>${money(Math.max(0, plan.goal - plan.saved))}</dd></div>
-      <div><dt>Interest earned</dt><dd>${money(plan.interest)}</dd></div>
-    </dl>`;
-
-  const rows = plan.timeline.map(({ it, lineUSD, cum, month }) => {
+  const shown = plan.timeline.slice(0, 8);
+  months.innerHTML = shown.map(({ it, cost, month }) => {
     const when = month == null ? 'Not reached' : month === 0 ? 'Now' : monthLabel(addMonths(month));
-    return `<div class="tl-row">
-      <span class="tl-when ${month === 0 ? 'now' : ''}">${when}</span>
-      <span class="thumb">${thumbHTML(it)}</span>
-      <span class="tl-title" title="${esc(it.title)}">${esc(it.title)} <span class="muted">· ${money(lineUSD)}</span></span>
-      <span class="tl-bar"><span class="bar"><span style="width:${Math.min(100, (cum / plan.goal) * 100).toFixed(1)}%"></span></span></span>
-      <span class="tl-cum">${money(cum, 'USD', true)} total</span>
-    </div>`;
-  }).join('');
-  timeline.innerHTML = rows ? `<h3>When you can afford each item <span>High priority first, then cheapest first</span></h3>${rows}` : '';
+    const img = safeUrl(it.image);
+    return `<li><span class="m-when ${month === 0 ? 'now' : ''}">${when}</span>
+      <span class="m-slot">${img ? `<img src="${esc(img)}" alt="" referrerpolicy="no-referrer" data-letter="${initial(it)}" data-mini>` : `<span class="mini-ph">${initial(it)}</span>`}
+      <span title="${esc(it.title)}">${esc(it.title)}</span><em>${money(cost, 'USD', true)}</em></span></li>`;
+  }).join('') + (plan.timeline.length > shown.length ? `<li class="more">and ${plural(plan.timeline.length - shown.length, 'more item')}, high priority first</li>` : '');
 }
 
-function financeScheduleHTML(plan, r) {
-  if (plan.principal <= 0) return '';
-  const rows = [];
-  let bal = plan.principal;
-  const step = plan.months <= 12 ? 3 : plan.months <= 24 ? 6 : 12;
-  for (let m = 1; m <= plan.months; m++) {
-    const interest = bal * r;
-    bal = Math.max(0, bal + interest - plan.monthly);
-    if (m % step === 0 || m === plan.months) {
-      const paidPct = (1 - bal / plan.principal) * 100;
-      rows.push(`<div class="tl-row">
-        <span class="tl-when">${monthLabel(addMonths(m))}</span><span></span>
-        <span class="tl-title">After payment ${m} of ${plan.months}</span>
-        <span class="tl-bar"><span class="bar"><span style="width:${paidPct.toFixed(1)}%"></span></span></span>
-        <span class="tl-cum">${money(bal, 'USD', true)} left</span>
-      </div>`);
-    }
-  }
-  return `<h3>Payoff schedule <span>${money(plan.monthly)} every month</span></h3>${rows.join('')}`;
+function renderImportSummary() {
+  const s = state.settings;
+  $('#importSum').textContent = `$${num(s.importShipping)} + ${num(s.importFeePct)}% + ${num(s.importDutyPct)}%`;
 }
 
 function renderRates() {
-  const pill = $('#ratesPill');
+  const pill = $('#rates');
   const r = state.rates;
   pill.classList.toggle('live', !!r && !r.stale);
   pill.classList.toggle('stale', !!r && !!r.stale);
   if (!r) {
-    $('#ratesText').textContent = state.ratesError ? 'Rates unavailable' : 'Loading rates…';
-    pill.title = state.ratesError || '';
+    $('#ratesText').textContent = state.ratesError ? 'Exchange rates unavailable' : 'Loading exchange rates…';
     return;
   }
-  const day = new Date(r.updated * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  $('#ratesText').textContent = `${r.stale ? 'Rates from' : 'Live rates'} · ${day}`;
-  pill.title = `Exchange rates from ${r.source}, updated daily. Last update: ${new Date(r.updated * 1000).toLocaleString()}`;
-  $('#footRates').textContent = `Exchange rates: ${r.source}, updated ${day}. Prices are as listed on each store and may change.`;
+  const day = new Date(r.updated * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const jpy = r.rates.JPY, cny = r.rates.CNY;
+  $('#ratesText').textContent = `${r.stale ? 'Rates from' : 'Today’s rates'} · $1 = ¥${jpy ? jpy.toFixed(1) : '—'} · ${cny ? cny.toFixed(2) : '—'} CNY`;
+  pill.title = `Exchange rates from ${r.source}, updated ${new Date(r.updated * 1000).toLocaleString()}`;
+  $('#regRates').textContent = `Converted at ${r.source} rates, ${day}. Store prices can change; check before buying.`;
+}
+
+function renderStoreChips() {
+  const shown = state.vendors.filter((v, i, all) => all.findIndex((x) => x.name === v.name) === i);
+  $('#storeChips').innerHTML = shown.map((v) =>
+    `<span class="store-chip ${v.country === 'CN' ? 'cn' : ''}" title="${v.access === 'open' ? 'Looked up automatically' : 'Use the bookmark button'}"><b>${v.country}</b>${esc(v.name)} <small>${esc(v.native !== v.name ? v.native : '')}</small></span>`).join('');
 }
 
 function render() {
   renderRates();
-  renderList();
-  renderSummary();
+  renderShelf();
+  renderRegister();
   renderPlan();
+  renderImportSummary();
 }
 
 // ---------------------------------------------------------------- actions
@@ -476,17 +495,16 @@ function render() {
 async function addUrls(text) {
   const urls = text.split(/\s+/).map((u) => u.trim()).filter(Boolean)
     .map((u) => (/^https?:\/\//i.test(u) ? u : `https://${u}`));
-  if (!urls.length) return;
   await Promise.all(urls.map(async (url) => {
     const p = { id: Math.random().toString(36).slice(2), host: hostOf(url) };
     state.pending.unshift(p);
-    renderList();
+    renderShelf();
     try {
       const { item } = await api('/api/items', { method: 'POST', body: { url } });
       state.items.push(item);
       state.highlight = item.id;
       if (item.lastError) {
-        toast(item.lastError, 'warn', 7000);
+        toast(item.lastError, 'warn', 8000);
         if (urls.length === 1) openEditor(item);
       } else {
         toast(`Added from ${item.vendor}`, 'ok');
@@ -500,29 +518,30 @@ async function addUrls(text) {
   }));
 }
 
-async function patchItem(id, fields) {
-  try {
-    const { item } = await api(`/api/items/${id}`, { method: 'PATCH', body: fields });
-    replaceItem(item);
-  } catch (err) {
-    toast(err.message, 'error');
-  }
-  render();
-}
-
 function replaceItem(item) {
   const i = state.items.findIndex((x) => x.id === item.id);
   if (i >= 0) state.items[i] = item;
   else state.items.push(item);
 }
 
+async function patchItem(id, fields) {
+  const it = state.items.find((x) => x.id === id);
+  if (it) { Object.assign(it, fields); render(); }  // optimistic
+  try {
+    replaceItem((await api(`/api/items/${id}`, { method: 'PATCH', body: fields })).item);
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+  render();
+}
+
 async function refreshItem(id, quiet = false) {
   state.refreshing.add(id);
-  renderList();
+  renderShelf();
   try {
     const { item } = await api(`/api/items/${id}/refresh`, { method: 'POST' });
     replaceItem(item);
-    if (!quiet) toast(item.lastError ? item.lastError : 'Price is up to date', item.lastError ? 'warn' : 'ok', item.lastError ? 7000 : 3000);
+    if (!quiet) toast(item.lastError ? item.lastError : 'Price is up to date', item.lastError ? 'warn' : 'ok', item.lastError ? 8000 : 3000);
     return item;
   } catch (err) {
     if (!quiet) toast(err.message, 'error');
@@ -540,18 +559,20 @@ async function refreshAll() {
   const total = queue.length;
   let done = 0, failed = 0;
   btn.disabled = true;
-  label.textContent = `Refreshing 0/${total}…`;
   const worker = async () => {
     while (queue.length) {
       const item = await refreshItem(queue.shift(), true);
       if (!item || item.lastError) failed++;
-      label.textContent = `Refreshing ${++done}/${total}…`;
+      label.textContent = `Checking ${++done} of ${total}…`;
     }
   };
+  label.textContent = `Checking 0 of ${total}…`;
   await Promise.all([worker(), worker(), worker()]);
   btn.disabled = false;
   label.textContent = 'Refresh prices';
-  toast(failed ? `Updated ${total - failed} of ${total}. ${failed} store${failed === 1 ? '' : 's'} couldn't be checked automatically.` : 'All prices are up to date', failed ? 'warn' : 'ok', 6000);
+  toast(failed
+    ? `Updated ${total - failed} of ${total}. ${plural(failed, 'store')} couldn't be checked automatically; their last prices are kept.`
+    : 'All prices are up to date', failed ? 'warn' : 'ok', 6000);
 }
 
 async function deleteItem(id) {
@@ -586,12 +607,14 @@ function currencyOptions(selected) {
 function openEditor(item) {
   state.editing = item || null;
   const form = $('#editorForm');
-  const it = item || { title: '', url: '', price: null, originalPrice: null, currency: 'USD', qty: 1, vendor: '', category: '', priority: 'medium', image: '', notes: '' };
+  const it = item || { title: '', url: '', price: null, originalPrice: null, currency: 'JPY', qty: 1, vendor: '', category: '', priority: 'medium', image: '', notes: '', mode: 'domestic', shipping: null };
   $('#editorTitle').textContent = item ? 'Edit item' : 'Add an item by hand';
   form.currency.innerHTML = currencyOptions(it.currency);
-  for (const key of ['title', 'url', 'vendor', 'category', 'priority', 'image', 'notes']) form[key].value = it[key] ?? '';
+  for (const key of ['title', 'url', 'vendor', 'category', 'priority', 'image', 'notes', 'mode']) form[key].value = it[key] ?? '';
   form.price.value = it.price ?? '';
   form.originalPrice.value = it.originalPrice ?? '';
+  form.shipping.value = it.shipping ?? '';
+  form.shipping.placeholder = `Default $${num(state.settings.importShipping)}`;
   form.qty.value = it.qty || 1;
   const alert = $('#editorAlert');
   alert.hidden = !(item && item.lastError);
@@ -604,12 +627,12 @@ function openEditor(item) {
 
 function updateEditorPreview() {
   const form = $('#editorForm');
-  const preview = { image: form.image.value, vendor: form.vendor.value, url: form.url.value };
-  $('#editorThumb').innerHTML = thumbHTML(preview);
+  $('#editorThumb').innerHTML = plateHTML({ image: form.image.value, vendor: form.vendor.value, url: form.url.value });
   const price = form.price.value === '' ? null : num(form.price.value);
   const cur = form.currency.value;
   const usd = toUSD(price, cur);
-  $('#editorUsd').innerHTML = price == null ? '' : cur === 'USD' ? `<b>${money(price)}</b>` : usd == null ? 'No exchange rate' : `<b>${money(usd)}</b>in US dollars`;
+  $('#editorUsd').innerHTML = price == null ? '' : cur === 'USD' ? `<b>${money(price)}</b>`
+    : usd == null ? 'No exchange rate' : `<b>${money(price, cur)}</b>about ${money(usd)}`;
 }
 
 async function submitEditor(e) {
@@ -629,6 +652,8 @@ async function submitEditor(e) {
     originalPrice: form.originalPrice.value === '' ? null : form.originalPrice.value,
     currency: form.currency.value,
     qty: form.qty.value || 1,
+    mode: form.mode.value,
+    shipping: form.shipping.value === '' ? null : form.shipping.value,
     vendor: form.vendor.value.trim(),
     category: form.category.value.trim(),
     priority: form.priority.value,
@@ -675,53 +700,71 @@ function bindEvents() {
     const input = $('#urlInput');
     const text = input.value;
     input.value = '';
-    addUrls(text);
+    if (text.trim()) addUrls(text);
+    else input.focus();
   });
   $('#addManual').addEventListener('click', () => openEditor(null));
   $('#refreshAll').addEventListener('click', refreshAll);
+  $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; renderShelf(); });
+  $('#tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-tab]');
+    if (!tab) return;
+    state.tab = tab.dataset.tab;
+    renderShelf();
+  });
 
-  $('#rows').addEventListener('click', (e) => {
+  $('#grid').addEventListener('click', (e) => {
+    const card = e.target.closest('.card[data-id]');
+    if (!card) return;
+    const item = state.items.find((x) => x.id === card.dataset.id);
+    if (!item) return;
+    const way = e.target.closest('.buyway button');
+    if (way) {
+      if (item.mode !== way.dataset.mode) patchItem(item.id, { mode: way.dataset.mode });
+      return;
+    }
     const btn = e.target.closest('[data-act]');
     if (!btn) return;
-    const id = btn.closest('tr')?.dataset.id;
-    const item = state.items.find((x) => x.id === id);
-    if (!item) return;
     if (btn.dataset.act === 'edit') openEditor(item);
-    if (btn.dataset.act === 'refresh' && !state.refreshing.has(id)) refreshItem(id);
-    if (btn.dataset.act === 'delete') deleteItem(id);
+    if (btn.dataset.act === 'refresh' && !state.refreshing.has(item.id)) refreshItem(item.id);
+    if (btn.dataset.act === 'delete') deleteItem(item.id);
   });
-  $('#rows').addEventListener('change', (e) => {
-    const id = e.target.closest('tr')?.dataset.id;
+  $('#grid').addEventListener('change', (e) => {
+    const id = e.target.closest('.card[data-id]')?.dataset.id;
     if (!id) return;
     if (e.target.classList.contains('inc')) patchItem(id, { include: e.target.checked });
-    if (e.target.classList.contains('qty')) patchItem(id, { qty: Math.max(1, Math.round(num(e.target.value)) || 1) });
+    if (e.target.classList.contains('qty-in')) patchItem(id, { qty: Math.max(1, Math.round(num(e.target.value)) || 1) });
   });
 
-  // Broken product images fall back to the store's initial; broken favicons disappear.
+  // Broken or blank product photos (some stores answer hotlinks with a 1px image) fall back to the store's initial.
+  const fallback = (img) => {
+    img.outerHTML = `<span class="${img.hasAttribute('data-mini') ? 'mini-ph' : 'ph'}">${esc(img.dataset.letter)}</span>`;
+  };
   document.addEventListener('error', (e) => {
+    if (e.target.tagName === 'IMG' && e.target.dataset.letter) fallback(e.target);
+  }, true);
+  document.addEventListener('load', (e) => {
     const img = e.target;
-    if (img.tagName !== 'IMG') return;
-    if (img.classList.contains('fav')) img.remove();
-    else if (img.dataset.letter) img.outerHTML = `<span class="thumb-ph">${esc(img.dataset.letter)}</span>`;
+    if (img.tagName === 'IMG' && img.dataset.letter && img.naturalWidth <= 2) fallback(img);
   }, true);
 
-  const plan = $('#plan');
-  plan.addEventListener('click', (e) => {
+  const register = $('#register');
+  register.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-mode], button[data-planby]');
     if (!btn) return;
     if (btn.dataset.mode) state.settings.mode = btn.dataset.mode;
     if (btn.dataset.planby) state.settings.planBy = btn.dataset.planby;
     saveSettingsSoon();
     renderPlan();
-    renderSummary();
+    renderRegister();
   });
-  $$('[data-setting]', plan).forEach((el) => {
+  $$('[data-setting]', register).forEach((el) => {
     el.value = state.settings[el.dataset.setting] ?? '';
     el.addEventListener('input', () => {
       state.settings[el.dataset.setting] = el.value;
       saveSettingsSoon();
-      renderPlan();
-      renderSummary();
+      if (el.dataset.setting.startsWith('import')) render();
+      else { renderPlan(); renderRegister(); }
     });
   });
 
@@ -732,43 +775,45 @@ function bindEvents() {
   $('#editor').addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 }
 
-async function loadRates() {
+async function loadRates(rerender = true) {
   try {
     state.rates = await api('/api/rates');
     state.ratesError = null;
   } catch (err) {
     state.ratesError = err.message;
   }
-  render();
+  if (rerender) render();
 }
 
 async function init() {
   const params = new URLSearchParams(location.search);
   try {
-    const [{ items }, { settings }] = await Promise.all([api('/api/items'), api('/api/settings')]);
+    const [{ items }, { settings }, { vendors }] = await Promise.all([api('/api/items'), api('/api/settings'), api('/api/vendors')]);
     state.items = items;
+    state.vendors = vendors;
     state.settings = { ...defaultSettings(), ...settings };
   } catch (err) {
     state.settings = defaultSettings();
     toast(`Couldn't load your wishlist: ${err.message}`, 'error', 8000);
   }
   bindEvents();
+  renderStoreChips();
   render();
-  loadRates();
+  loadRates();  // amounts read "Converting…" until the rates arrive, then everything re-renders
   setupBookmarklet();
 
   if (params.has('added')) {
     const item = state.items.find((x) => x.id === params.get('added'));
     if (item) {
       state.highlight = item.id;
-      renderList();
+      renderShelf();
       if (item.lastError) openEditor(item);
       else toast(`Added "${item.title}" from ${item.vendor}`, 'ok');
     }
   }
   if (params.has('error')) toast(params.get('error'), 'error', 8000);
   if (params.has('added') || params.has('error')) history.replaceState(null, '', location.pathname);
-  setTimeout(() => { state.highlight = null; }, 2500);
+  setTimeout(() => { state.highlight = null; }, 2000);
 }
 
 init();
