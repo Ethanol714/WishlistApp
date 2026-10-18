@@ -9,3 +9,5 @@ __pycache__/
 .impeccable/live/
 .impeccable/config.local.json
 .impeccable/hook.cache.json
+build/
+dist/

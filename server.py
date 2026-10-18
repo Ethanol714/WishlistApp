@@ -4,12 +4,16 @@
     python3 server.py            # http://localhost:8080
     python3 server.py --open     # ...and open it in your browser
     PORT=9000 python3 server.py
+
+Your list is stored in the per-user app folder (see default_data_dir), shared with the desktop app.
+Set WISHLIST_DATA to use another folder.
 """
 import json
 import mimetypes
 import secrets
 import os
 import re
+import shutil
 import sys
 import threading
 import time
@@ -26,8 +30,35 @@ from wishlist.vendors import VENDORS, vendor_for
 mimetypes.add_type('font/woff2', '.woff2')
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-PUBLIC = os.path.join(ROOT, 'public')
-DATA = os.environ.get('WISHLIST_DATA') or os.path.join(ROOT, 'data')
+# Inside a packaged app (PyInstaller) the web files are unpacked to sys._MEIPASS.
+PUBLIC = os.path.join(getattr(sys, '_MEIPASS', ROOT), 'public')
+
+
+def default_data_dir():
+    """Per-user app data folder, shared by the desktop app and `python3 server.py`."""
+    if sys.platform == 'darwin':
+        base = os.path.expanduser('~/Library/Application Support')
+    elif os.name == 'nt':
+        base = os.environ.get('APPDATA') or os.path.expanduser('~')
+    else:
+        base = os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share')
+    return os.path.join(base, 'Wishlist')
+
+
+def migrate_legacy_data(data_dir):
+    """Copy (never move) a list saved by earlier versions in the project's data/ folder."""
+    legacy = os.path.join(ROOT, 'data')
+    if os.path.exists(os.path.join(data_dir, 'wishlist.json')) or not os.path.isfile(os.path.join(legacy, 'wishlist.json')):
+        return
+    os.makedirs(data_dir, exist_ok=True)
+    for name in ('wishlist.json', 'rates.json'):
+        if os.path.isfile(os.path.join(legacy, name)):
+            shutil.copy2(os.path.join(legacy, name), os.path.join(data_dir, name))
+
+
+DATA = os.environ.get('WISHLIST_DATA') or default_data_dir()
+if not os.environ.get('WISHLIST_DATA'):
+    migrate_legacy_data(DATA)
 
 store = Store(os.path.join(DATA, 'wishlist.json'))
 rates = Rates(os.path.join(DATA, 'rates.json'))
@@ -393,6 +424,9 @@ class Handler(BaseHTTPRequestHandler):
             {'name': v.name, 'native': v.native, 'country': v.country, 'currency': v.currency,
              'access': v.access, 'domain': v.suffix} for v in VENDORS]})
 
+    def health(self):
+        self.send_json({'app': 'wishlist', 'data': DATA})
+
     def get_rates(self):
         data = rates.get()
         if data is None:
@@ -422,6 +456,7 @@ ROUTES = [
     (r'/api/bookmarklet', {'GET': Handler.get_bookmarklet}),
     (r'/api/rates', {'GET': Handler.get_rates}),
     (r'/api/vendors', {'GET': Handler.list_vendors}),
+    (r'/api/health', {'GET': Handler.health}),
     (r'/api/settings', {'GET': Handler.get_settings, 'PUT': Handler.put_settings}),
 ]
 

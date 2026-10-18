@@ -5,7 +5,24 @@ picture, name, store, price and any sale discount. Foreign prices are converted 
 the day's exchange rate, and a planner works out how much to save (or pay) each month to buy
 everything.
 
-## Run it
+## Desktop app (Mac and Windows)
+
+Download from the [Releases page](https://github.com/Ethanol714/WishlistApp/releases):
+
+- **Mac:** `Wishlist-macOS.zip`. Unzip, move **Wishlist.app** to Applications, and the first time
+  right-click it → **Open** → **Open** (it isn't notarized by Apple).
+- **Windows:** `Wishlist-Windows.exe`. Double-click to run. If Windows SmartScreen warns about an
+  unrecognized app, click **More info** → **Run anyway**.
+
+The desktop app is the same Wishlist in its own window. While the window is open it serves your list on
+http://localhost:8080, so the Chrome extension and the bookmark button add items to it directly.
+Your list is stored in `~/Library/Application Support/Wishlist` (Mac) or `%APPDATA%\Wishlist`
+(Windows), shared with `python3 server.py`.
+
+Build it yourself with `pip install pyinstaller pywebview` and `pyinstaller wishlist.spec`
+(output in `dist/`), or run the **Build desktop apps** workflow on GitHub, which builds both.
+
+## Run it from source
 
 Needs only Python 3 (already on every Mac). Nothing to install.
 
@@ -14,7 +31,7 @@ python3 server.py --open
 ```
 
 Or double-click **Start Wishlist.command** in Finder. The app runs at http://localhost:8080.
-Your list is saved in `data/wishlist.json` (kept out of git).
+Your list is saved in your per-user app folder (see above), not in the project.
 
 ## Features
 
@@ -74,6 +91,8 @@ it (signed in, prices loaded), to the app. You can always edit an item and type 
 ## How it works
 
 - `server.py`: local web server and JSON API (Python standard library only)
+- `desktop.py` and `wishlist.spec`: the desktop app (pywebview window around the server) and its PyInstaller build
+- `.github/workflows/build.yml`: builds Wishlist.exe and Wishlist.app and publishes releases
 - `wishlist/scraper.py`: reads product data from Amazon and Shopify pages, schema.org JSON-LD,
   Open Graph/product meta tags, microdata and visible price elements
 - `wishlist/vendors.py` and `wishlist/asia.py`: Japanese and Chinese store registry and readers
