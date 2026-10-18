@@ -1,0 +1,7 @@
+# Your personal wishlist data and cached exchange rates
+data/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/settings.local.json
+.impeccable/

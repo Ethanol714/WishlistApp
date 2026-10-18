@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wishlist",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["server.py"],
+      "port": 8080
+    },
+    {
+      "name": "wishlist-running",
+      "url": "http://localhost:8080",
+      "port": 8080
+    }
+  ]
+}
