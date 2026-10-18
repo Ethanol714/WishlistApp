@@ -728,6 +728,26 @@ async function submitEditor(e) {
   }
 }
 
+// ---------------------------------------------------------------- extension guide
+
+async function openGuide() {
+  const status = $('#guideStatus');
+  status.className = 'guide-status';
+  status.textContent = 'Checking whether the extension is connected…';
+  $('#extGuide').showModal();
+  try {
+    const { extensionSeen } = await api('/api/health');
+    if (extensionSeen) {
+      status.classList.add('ok');
+      status.textContent = `Your Chrome extension is connected. It was last used ${timeAgo(extensionSeen)}.`;
+    } else {
+      status.textContent = 'Not connected yet. Follow the steps below.';
+    }
+  } catch {
+    status.hidden = true;
+  }
+}
+
 // ---------------------------------------------------------------- bookmarklet
 
 async function setupBookmarklet() {
@@ -758,6 +778,20 @@ function bindEvents() {
     else input.focus();
   });
   $('#addManual').addEventListener('click', () => openEditor(null));
+  $('#extGuideBtn').addEventListener('click', openGuide);
+  $('#extFolderBtn').addEventListener('click', async () => {
+    try {
+      await api('/api/extension/folder', { method: 'POST', body: {} });
+      toast('The Chrome Extension folder is open. Next, open Chrome.', 'ok');
+    } catch (err) { toast(err.message, 'error', 7000); }
+  });
+  $('#extChromeBtn').addEventListener('click', async () => {
+    try {
+      await api('/api/extension/chrome', { method: 'POST', body: {} });
+    } catch (err) { toast(err.message, 'error', 7000); }
+  });
+  $$('#extGuide [data-close]').forEach((b) => b.addEventListener('click', () => $('#extGuide').close()));
+  $('#extGuide').addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
   $('#refreshAll').addEventListener('click', refreshAll);
   $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; renderShelf(); });
   $('#tabs').addEventListener('click', (e) => {

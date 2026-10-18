@@ -9,10 +9,15 @@ everything.
 
 Download from the [Releases page](https://github.com/Ethanol714/WishlistApp/releases):
 
-- **Mac:** `Wishlist-macOS.zip`. Unzip, move **Wishlist.app** to Applications, and the first time
-  right-click it → **Open** → **Open** (it isn't notarized by Apple).
+- **Mac:** `Wishlist.dmg`. Double-click it, then drag the Wishlist icon onto the Applications
+  folder in the window that opens. Open Wishlist from Applications (or Launchpad). The first time
+  only, if your Mac says it can't check Wishlist, open **System Settings → Privacy & Security**,
+  scroll down and click **Open Anyway** (the app isn't notarized by Apple).
 - **Windows:** `Wishlist-Windows.exe`. Double-click to run. If Windows SmartScreen warns about an
   unrecognized app, click **More info** → **Run anyway**.
+
+To add items from any store, click **Get the Chrome extension** at the top of the app and follow
+the five steps; the app opens the right folder and the right Chrome page for you.
 
 The desktop app is the same Wishlist in its own window. While the window is open it serves your list on
 http://localhost:8080, so the Chrome extension and the bookmark button add items to it directly.

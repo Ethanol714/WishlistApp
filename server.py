@@ -14,6 +14,7 @@ import secrets
 import os
 import re
 import shutil
+import subprocess
 import sys
 import threading
 import time
@@ -31,7 +32,9 @@ mimetypes.add_type('font/woff2', '.woff2')
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 # Inside a packaged app (PyInstaller) the web files are unpacked to sys._MEIPASS.
-PUBLIC = os.path.join(getattr(sys, '_MEIPASS', ROOT), 'public')
+RESOURCES = getattr(sys, '_MEIPASS', ROOT)
+PUBLIC = os.path.join(RESOURCES, 'public')
+EXTENSION_SRC = os.path.join(RESOURCES, 'extension')
 
 
 def default_data_dir():
@@ -196,6 +199,34 @@ def apply_scrape(item, data):
         item['history'] = item['history'][-HISTORY_LIMIT:]
 
 
+def reveal(path):
+    """Show a folder in Finder / File Explorer."""
+    if sys.platform == 'darwin':
+        subprocess.Popen(['open', '-R', path])
+    elif os.name == 'nt':
+        subprocess.Popen(['explorer', '/select,', path])
+    else:
+        subprocess.Popen(['xdg-open', os.path.dirname(path)])
+
+
+def open_in_chrome(url):
+    """Open a URL (including chrome:// pages) in Google Chrome. Returns False if Chrome isn't found."""
+    try:
+        if sys.platform == 'darwin':
+            return subprocess.run(['open', '-a', 'Google Chrome', url], capture_output=True).returncode == 0
+        if os.name == 'nt':
+            for base in (os.environ.get('PROGRAMFILES'), os.environ.get('PROGRAMFILES(X86)'), os.environ.get('LOCALAPPDATA')):
+                exe = os.path.join(base or '', 'Google', 'Chrome', 'Application', 'chrome.exe')
+                if base and os.path.isfile(exe):
+                    subprocess.Popen([exe, url])
+                    return True
+            return False
+        subprocess.Popen(['google-chrome', url])
+        return True
+    except OSError:
+        return False
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = 'Wishlist/1.0'
 
@@ -324,6 +355,7 @@ class Handler(BaseHTTPRequestHandler):
     def scan_page(self):
         """The Chrome extension sends the page it's looking at; return what we can read, without saving."""
         body = self.read_json()
+        store.mark_extension_seen(now_ms())
         url = _http_url(body.get('url'), 'Page link', required=True)
         data = extract(url, str(body.get('html') or ''), captured=True)
         existing = next((i for i in store.items() if i['url'] in (url, data['url'])), None)
@@ -425,7 +457,25 @@ class Handler(BaseHTTPRequestHandler):
              'access': v.access, 'domain': v.suffix} for v in VENDORS]})
 
     def health(self):
-        self.send_json({'app': 'wishlist', 'data': DATA})
+        self.send_json({'app': 'wishlist', 'data': DATA, 'extensionSeen': store.extension_seen()})
+
+    def extension_folder(self):
+        """Copy the bundled Chrome extension next to the list and show it in Finder / File Explorer."""
+        self.read_json()
+        if not os.path.isdir(EXTENSION_SRC):
+            raise BadRequest("This copy of Wishlist doesn't include the Chrome extension.")
+        target = os.path.join(DATA, 'Chrome Extension')
+        if os.path.isdir(target):
+            shutil.rmtree(target)
+        shutil.copytree(EXTENSION_SRC, target)
+        reveal(target)
+        self.send_json({'path': target})
+
+    def open_chrome_extensions(self):
+        self.read_json()
+        if not open_in_chrome('chrome://extensions'):
+            raise BadRequest("Couldn't find Google Chrome. Install Chrome, then try again.")
+        self.send_json({'ok': True})
 
     def get_rates(self):
         data = rates.get()
@@ -457,6 +507,8 @@ ROUTES = [
     (r'/api/rates', {'GET': Handler.get_rates}),
     (r'/api/vendors', {'GET': Handler.list_vendors}),
     (r'/api/health', {'GET': Handler.health}),
+    (r'/api/extension/folder', {'POST': Handler.extension_folder}),
+    (r'/api/extension/chrome', {'POST': Handler.open_chrome_extensions}),
     (r'/api/settings', {'GET': Handler.get_settings, 'PUT': Handler.put_settings}),
 ]
 

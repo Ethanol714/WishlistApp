@@ -3,11 +3,11 @@
 #   Windows: pyinstaller wishlist.spec   ->  dist/Wishlist.exe
 import sys
 
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 a = Analysis(
     ['desktop.py'],
-    datas=[('public', 'public')],
+    datas=[('public', 'public'), ('extension', 'extension')],
     hiddenimports=['wishlist.asia', 'wishlist.vendors'],
     excludes=['tkinter'],
 )

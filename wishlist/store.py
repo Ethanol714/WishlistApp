@@ -86,3 +86,12 @@ class Store:
             if not os.path.exists(self.path):
                 self._save()
             return self.db['secret']
+
+    def extension_seen(self):
+        with self.lock:
+            return self.db.get('extensionSeen')
+
+    def mark_extension_seen(self, when):
+        with self.lock:
+            self.db['extensionSeen'] = when
+            self._save()

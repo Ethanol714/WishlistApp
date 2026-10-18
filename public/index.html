@@ -22,17 +22,7 @@
         </form>
         <div class="head-links">
           <button type="button" class="head-link" id="addManual">Add an item by hand</button>
-          <details class="bm" id="bmTip">
-            <summary class="head-link">Bookmark button for stores that block lookups</summary>
-            <div class="bm-body">
-              <p>The Wishlist Chrome extension is the easiest way to add from any store (see the README). If you'd rather not install it, drag this button to your bookmarks bar and click it on any product page:</p>
-              <a class="bm-button" id="bookmarklet" href="#" title="Drag to your bookmarks bar">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                Add to Wishlist
-              </a>
-              <p class="bm-note">It sends the page you're looking at, as your browser shows it, to this app while it's running.</p>
-            </div>
-          </details>
+          <button type="button" class="head-link" id="extGuideBtn">Get the Chrome extension</button>
         </div>
       </div>
       <div class="cal-stack">
@@ -181,6 +171,43 @@
         <button type="submit" class="btn btn-go"><span>Save item</span></button>
       </footer>
     </form>
+  </dialog>
+  <dialog id="extGuide" class="editor guide" aria-labelledby="guideTitle">
+    <header class="editor-head">
+      <h2><span id="guideTitle">Get the Chrome extension</span></h2>
+      <button type="button" class="icon-btn" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+    <div class="guide-body">
+      <p class="guide-lead">With the extension, you can add a product from any store with one click, even stores like Bic Camera or Taobao. It takes about a minute to set up, once.</p>
+      <p class="guide-status" id="guideStatus"></p>
+      <ol class="steps">
+        <li>
+          <div><b>Get the extension folder.</b> A folder called <i>Chrome Extension</i> will appear on your screen. Leave it where it is.</div>
+          <button type="button" class="btn btn-go" id="extFolderBtn"><span>Show the folder</span></button>
+        </li>
+        <li>
+          <div><b>Open Chrome's extension page.</b></div>
+          <button type="button" class="btn btn-go" id="extChromeBtn"><span>Open in Chrome</span></button>
+        </li>
+        <li><div>On that page, turn on <b>Developer mode</b> with the switch in the top-right corner.</div></li>
+        <li><div>Click <b>Load unpacked</b> (top-left), then pick the <i>Chrome Extension</i> folder from step 1 and click <b>Select</b>.</div></li>
+        <li><div>Click the puzzle-piece icon at the top-right of Chrome, then the pin next to <b>Wishlist</b>, so its icon stays on your toolbar.</div></li>
+      </ol>
+      <p class="guide-done"><b>That's it.</b> Now, on any product page, click the Wishlist icon in Chrome and press <b>Add to my wishlist</b>. Keep this Wishlist app open while you do.</p>
+      <details class="bm" id="bmTip">
+        <summary>Can't install extensions? Use the bookmark button instead</summary>
+        <div class="bm-body">
+          <p>Drag this button to your bookmarks bar, then click it on any product page:</p>
+          <a class="bm-button" id="bookmarklet" href="#" title="Drag to your bookmarks bar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Add to Wishlist
+          </a>
+          <p class="bm-note">It sends the page you're looking at to this app while it's open.</p>
+        </div>
+      </details>
+    </div>
   </dialog>
   <datalist id="categoryList"></datalist>
   <div class="toasts" id="toasts" aria-live="polite"></div>
