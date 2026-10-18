@@ -5,44 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wishlist</title>
   <meta name="color-scheme" content="light">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A4EA2'/%3E%3Cpath d='M7 9h12l6 7-6 7H7z' fill='%23FFE100'/%3E%3Ccircle cx='11' cy='16' r='2' fill='%230A4EA2'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230B1A3A'/%3E%3Cpath d='M9 22 14 10h11l-5 12z' fill='%232FD3FF'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="store-head">
-    <div class="wrap">
-      <div class="head-row">
-        <a class="brand" href="/">
-          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 8h15l7 8-7 8H5z"/><circle cx="10" cy="16" r="2.2"/></svg>
-          <span>Wishlist</span>
-        </a>
-        <div class="rates" id="rates" title="Exchange rates">
-          <span class="rates-dot"></span><span id="ratesText">Loading exchange rates…</span>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="top-main">
+        <a class="brand" href="/"><b>Wishlist</b><i aria-hidden="true"></i></a>
+        <form id="addForm" class="add-bar" autocomplete="off">
+          <label class="sr-only" for="urlInput">Product link</label>
+          <input id="urlInput" type="text" inputmode="url" spellcheck="false"
+                 placeholder="Paste a product link: Bic Camera, DLsite, Taobao, JD, Amazon…">
+          <button class="btn btn-go" type="submit"><span>Add to wishlist</span></button>
+        </form>
+        <div class="head-links">
+          <button type="button" class="head-link" id="addManual">Add an item by hand</button>
+          <details class="bm" id="bmTip">
+            <summary class="head-link">Bookmark button for stores that block lookups</summary>
+            <div class="bm-body">
+              <p>The Wishlist Chrome extension is the easiest way to add from any store (see the README). If you'd rather not install it, drag this button to your bookmarks bar and click it on any product page:</p>
+              <a class="bm-button" id="bookmarklet" href="#" title="Drag to your bookmarks bar">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Add to Wishlist
+              </a>
+              <p class="bm-note">It sends the page you're looking at, as your browser shows it, to this app while it's running.</p>
+            </div>
+          </details>
         </div>
       </div>
-      <form id="addForm" class="add-bar" autocomplete="off">
-        <label class="sr-only" for="urlInput">Product link</label>
-        <input id="urlInput" type="text" inputmode="url" spellcheck="false"
-               placeholder="Paste a product link: Bic Camera, DLsite, Taobao, JD, Amazon…">
-        <button class="btn btn-pop" type="submit">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-          Add to wishlist
-        </button>
-      </form>
-      <div class="head-links">
-        <button type="button" class="head-link" id="addManual">Add an item by hand</button>
-        <details class="bm" id="bmTip">
-          <summary class="head-link">Bookmark button for stores that block lookups</summary>
-          <div class="bm-body">
-            <p>Taobao, Tmall and JD only show prices to signed-in shoppers, and Bic Camera, Yodobashi, Mercari and Suruga-ya block automatic lookups. Drag this button to your bookmarks bar, then click it on any product page:</p>
-            <a class="bm-button" id="bookmarklet" href="#" title="Drag to your bookmarks bar">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-              Add to Wishlist
-            </a>
-            <p class="bm-note">It sends the page you're looking at, as your browser shows it, to this app while it's running.</p>
-          </div>
-        </details>
+      <div class="cal-stack">
+        <div class="calendar" id="calendar" aria-label="Today and exchange rates">
+          <div class="cal-date" id="calDate"></div>
+          <div class="cal-day" id="calDay"></div>
+          <div class="cal-rate" id="calRate"><span class="dot"></span>Loading exchange rates…</div>
+        </div>
       </div>
     </div>
   </header>
@@ -62,16 +60,13 @@
               <option value="store">Store</option>
             </select>
           </label>
-          <button type="button" class="btn btn-quiet" id="refreshAll">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
-            <span>Refresh prices</span>
-          </button>
+          <button type="button" class="btn btn-quiet" id="refreshAll"><span>Refresh prices</span></button>
         </div>
       </div>
       <div id="notice"></div>
       <div class="grid" id="grid" aria-live="polite"></div>
       <section class="empty" id="empty" hidden>
-        <h2>Start your list with a link</h2>
+        <h2>Start your list</h2>
         <p>Paste a product page from any store above. These stores have dedicated support for prices, sale prices and photos:</p>
         <div class="store-chips" id="storeChips"></div>
       </section>
@@ -79,27 +74,32 @@
 
     <aside class="register" id="register" aria-label="Totals and plan">
       <section class="reg-card till" aria-label="Your total">
-        <h2 class="reg-title">Your total</h2>
+        <div class="reg-head"><h2 class="reg-title"><span>Total</span></h2></div>
         <dl class="receipt" id="receipt"></dl>
         <div class="readout" id="planResult" aria-live="polite"></div>
         <p class="reg-rates" id="regRates"></p>
       </section>
 
       <section class="reg-card plan" id="plan" data-mode="save" data-planby="date">
-        <div class="plan-head">
-          <h2 class="reg-title">Paying for it</h2>
+        <div class="reg-head">
+          <h2 class="reg-title"><span>Plan</span></h2>
           <div class="seg" role="tablist" aria-label="Plan type">
-            <button type="button" role="tab" data-mode="save">Save up</button>
-            <button type="button" role="tab" data-mode="finance">Finance</button>
+            <button type="button" role="tab" data-mode="save"><span>Save up</span></button>
+            <button type="button" role="tab" data-mode="finance"><span>Finance</span></button>
           </div>
         </div>
         <div class="plan-fields">
           <div class="only-save">
             <div class="seg seg-sm" role="tablist" aria-label="Plan by">
-              <button type="button" data-planby="date">By a date</button>
-              <button type="button" data-planby="budget">By a monthly amount</button>
+              <button type="button" data-planby="date"><span>By a date</span></button>
+              <button type="button" data-planby="budget"><span>By a monthly amount</span></button>
             </div>
-            <label class="field only-date"><span>Buy everything by</span><input type="month" data-setting="goalMonth"></label>
+            <div class="field only-date"><span id="goalLabel">Buy everything by</span>
+              <div class="month-pick" role="group" aria-labelledby="goalLabel">
+                <select id="goalM" aria-label="Month"></select>
+                <select id="goalY" aria-label="Year"></select>
+              </div>
+            </div>
             <label class="field only-budget"><span>I can save each month</span><span class="affix"><i>$</i><input type="number" min="0" step="10" data-setting="budget"></span></label>
             <div class="field-row">
               <label class="field"><span>Already saved</span><span class="affix"><i>$</i><input type="number" min="0" step="50" data-setting="saved"></span></label>
@@ -126,7 +126,7 @@
 
       <details class="reg-card import-set" id="importSet">
         <summary>
-          <span class="reg-title">Import cost estimates</span>
+          <span class="import-title">Import estimates</span>
           <span class="import-sum" id="importSum"></span>
         </summary>
         <p class="hint">Used for items set to Import. These are your own estimates, not quotes.</p>
@@ -144,7 +144,7 @@
   <dialog id="editor" class="editor" aria-labelledby="editorTitle">
     <form id="editorForm" novalidate>
       <header class="editor-head">
-        <h2 id="editorTitle">Edit item</h2>
+        <h2><span id="editorTitle">Edit item</span></h2>
         <button type="button" class="icon-btn" data-close aria-label="Close">
           <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
@@ -177,8 +177,8 @@
       </div>
       <p class="editor-error" id="editorError" hidden></p>
       <footer class="editor-foot">
-        <button type="button" class="btn btn-quiet" data-close>Cancel</button>
-        <button type="submit" class="btn btn-blue">Save item</button>
+        <button type="button" class="btn btn-quiet" data-close><span>Cancel</span></button>
+        <button type="submit" class="btn btn-go"><span>Save item</span></button>
       </footer>
     </form>
   </dialog>

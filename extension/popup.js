@@ -59,7 +59,7 @@ function showState(title, text, button) {
 function render() {
   const p = product;
   const img = p.image && /^https?:/i.test(p.image) ? `<img src="${esc(p.image)}" alt="" referrerpolicy="no-referrer">` : `<span class="ph">${esc((p.vendor || '?')[0].toUpperCase())}</span>`;
-  const flag = p.country ? `<span class="flag">${esc(p.country)}</span>` : '';
+  const flag = p.country ? `<span class="flag"><span>${esc(p.country)}</span></span>` : '';
   const native = p.vendorNative && p.vendorNative !== p.vendor ? `<small>${esc(p.vendorNative)}</small>` : '';
   const canImport = Boolean(p.country) || p.currency !== 'USD';
   let note = '';
@@ -75,7 +75,7 @@ function render() {
       </div>
     </div>
     ${note}
-    <div class="pricecard">
+    <div class="band">
       <div class="sale" id="sale" hidden></div>
       <div class="pc">
         <label class="price-in"><span id="sym">${esc(symbol(p.currency))}</span>
@@ -83,11 +83,11 @@ function render() {
         <select name="currency" aria-label="Currency">${[...new Set([p.currency, ...CURRENCIES])].map((c) => `<option ${c === p.currency ? 'selected' : ''}>${c}</option>`).join('')}</select>
       </div>
       <div class="usd" id="usd"></div>
-      ${canImport ? `<div class="buyway" role="group" aria-label="How you'll buy it">
-        <button type="button" data-mode="domestic" aria-pressed="true">Domestic</button>
-        <button type="button" data-mode="import" aria-pressed="false">Import</button>
-      </div>` : ''}
     </div>
+    ${canImport ? `<div class="buyway" role="group" aria-label="How you'll buy it">
+      <button type="button" data-mode="domestic" aria-pressed="true"><span>Domestic</span></button>
+      <button type="button" data-mode="import" aria-pressed="false"><span>Import</span></button>
+    </div>` : ''}
     <div class="fields">
       <label class="field"><span>Regular price, before sale</span><input name="originalPrice" type="number" step="0.01" min="0" value="${p.originalPrice ?? ''}"></label>
       <label class="field"><span>Quantity</span><input name="qty" type="number" min="1" step="1" value="${existing?.qty || 1}"></label>
@@ -98,7 +98,7 @@ function render() {
     </div>
     <p class="error" id="error" hidden></p>
     <div class="actions">
-      <button type="submit" class="btn btn-add" id="addBtn">${existing ? 'Update in my wishlist' : 'Add to my wishlist'}</button>
+      <button type="submit" class="btn btn-go" id="addBtn"><span>${existing ? 'Update in my wishlist' : 'Add to my wishlist'}</span></button>
     </div>
   </form>`;
 
@@ -127,7 +127,7 @@ function updatePrices() {
   const sale = $('#sale');
   if (price != null && original > price) {
     sale.hidden = false;
-    sale.innerHTML = `<span>SALE −${Math.round((1 - price / original) * 100)}%</span><s>${esc(money(original, cur))}</s>`;
+    sale.textContent = `−${Math.round((1 - price / original) * 100)}% · was ${money(original, cur)}`;
   } else {
     sale.hidden = true;
   }
@@ -162,7 +162,7 @@ async function add(e) {
       <span class="check">${CHECK}</span>
       <h2>${updated ? 'Updated in your wishlist' : 'Added to your wishlist'}</h2>
       <p>${esc(item.title)}</p>
-      <button type="button" class="btn btn-blue" id="seeList">See my list</button>
+      <button type="button" class="btn btn-go" id="seeList"><span>See my list</span></button>
     </section>`;
     $('#seeList').addEventListener('click', () => openList(item.id));
   } catch (err) {
@@ -214,7 +214,7 @@ async function scan() {
     showState(
       offline ? 'The Wishlist app isn’t running' : 'Something went wrong',
       offline ? `Start it (double-click "Start Wishlist.command"), then click the Wishlist button again. Looking for it at ${base}.` : err.message,
-      '<button type="button" class="btn btn-blue" id="retry">Try again</button>',
+      '<button type="button" class="btn btn-go" id="retry"><span>Try again</span></button>',
     );
     $('#retry').addEventListener('click', () => { showScanning(); scan(); });
   }

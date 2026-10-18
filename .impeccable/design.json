@@ -1,454 +1,422 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-18T01:01:57+00:00",
+  "generatedAt": "2026-10-18T01:48:12+00:00",
   "title": "Design System: Wishlist",
   "extensions": {
     "colorMeta": {
-      "blue": {
-        "role": "primary",
-        "displayName": "Store Blue",
-        "canonical": "#0a4ea2",
-        "tonalRamp": [
-          "#00003c",
-          "#001b6d",
-          "#004093",
-          "#2564ba",
-          "#4a89e2",
-          "#76afff",
-          "#b0d3ff",
-          "#e0f0ff"
-        ]
-      },
-      "blue-deep": {
-        "role": "primary",
-        "displayName": "Store Blue Deep",
-        "canonical": "#083b7b",
-        "tonalRamp": [
-          "#00003c",
-          "#00215f",
-          "#124384",
-          "#3566aa",
-          "#588ad1",
-          "#7cb0f9",
-          "#b1d3ff",
-          "#e0f0ff"
-        ]
-      },
-      "blue-tint": {
-        "role": "primary",
-        "displayName": "Blue Tint",
-        "canonical": "#e6eefa",
-        "tonalRamp": [
-          "#070b13",
-          "#212730",
-          "#3f454f",
-          "#606771",
-          "#828a95",
-          "#a7afba",
-          "#cad2dd",
-          "#e7effb"
-        ]
-      },
-      "blue-line": {
-        "role": "primary",
-        "displayName": "Blue Line",
-        "canonical": "#b9cdec",
-        "tonalRamp": [
-          "#010a1f",
-          "#18273e",
-          "#35465f",
-          "#556782",
-          "#788aa7",
-          "#9cafcd",
-          "#bed2f2",
-          "#e1f0ff"
-        ]
-      },
-      "pop": {
-        "role": "secondary",
-        "displayName": "POP Yellow",
-        "canonical": "#ffe100",
-        "tonalRamp": [
-          "#0f0b00",
-          "#2e2600",
-          "#514500",
-          "#766600",
-          "#9e8900",
-          "#c6af12",
-          "#ecd22a",
-          "#fff02f"
-        ]
-      },
-      "pop-deep": {
-        "role": "secondary",
-        "displayName": "POP Edge",
-        "canonical": "#f2c700",
-        "tonalRamp": [
-          "#110a00",
-          "#312500",
-          "#544300",
-          "#7c6300",
-          "#a3860e",
-          "#d0aa00",
-          "#f8cd18",
-          "#ffeb4c"
-        ]
-      },
-      "pop-hover": {
-        "role": "secondary",
-        "displayName": "POP Hover",
-        "canonical": "#ffea3d",
-        "tonalRamp": [
-          "#0f0b00",
-          "#2d2700",
-          "#4e4600",
-          "#726704",
-          "#998b08",
-          "#c3b000",
-          "#e9d40d",
-          "#fff248"
-        ]
-      },
-      "pop-soft": {
-        "role": "secondary",
-        "displayName": "POP Soft",
-        "canonical": "#fff6a6",
-        "tonalRamp": [
-          "#0e0b00",
-          "#2d2700",
-          "#4f4600",
-          "#716812",
-          "#958b3d",
-          "#bab163",
-          "#ddd485",
-          "#fbf2a2"
-        ]
-      },
-      "pop-tint": {
-        "role": "secondary",
-        "displayName": "POP Tint",
-        "canonical": "#fff8c2",
-        "tonalRamp": [
-          "#0f0b00",
-          "#2d2700",
-          "#4d4613",
-          "#6e6736",
-          "#928b59",
-          "#b7b07c",
-          "#dad39e",
-          "#f8f1bb"
-        ]
-      },
-      "red": {
-        "role": "tertiary",
-        "displayName": "Price Red",
-        "canonical": "#e60012",
-        "tonalRamp": [
-          "#220000",
-          "#510001",
-          "#8b0000",
-          "#c30006",
-          "#f82a27",
-          "#ff8375",
-          "#ffbdb3",
-          "#ffe6e1"
-        ]
-      },
-      "red-ink": {
-        "role": "tertiary",
-        "displayName": "Red Ink",
-        "canonical": "#b3000e",
-        "tonalRamp": [
-          "#210000",
-          "#510000",
-          "#860007",
-          "#bd1719",
-          "#e84940",
-          "#ff8274",
-          "#ffbcb3",
-          "#ffe6e1"
-        ]
-      },
-      "red-tint": {
-        "role": "tertiary",
-        "displayName": "Red Tint",
-        "canonical": "#fde8ea",
-        "tonalRamp": [
-          "#140709",
-          "#312224",
-          "#514042",
-          "#736163",
-          "#978486",
-          "#bca8aa",
-          "#e0cbcd",
-          "#fee9eb"
-        ]
-      },
-      "cn": {
-        "role": "tertiary",
-        "displayName": "China Red",
-        "canonical": "#c8102e",
-        "tonalRamp": [
-          "#220001",
-          "#530006",
-          "#890015",
-          "#c10028",
-          "#ec414b",
-          "#ff7d7c",
-          "#ffbab6",
-          "#ffe5e3"
-        ]
-      },
-      "green": {
-        "role": "tertiary",
-        "displayName": "Savings Green",
-        "canonical": "#00813a",
-        "tonalRamp": [
-          "#001100",
-          "#003208",
-          "#005719",
-          "#007c35",
-          "#37a158",
-          "#61c77c",
-          "#86ec9e",
-          "#b4ffc5"
-        ]
-      },
-      "ink": {
+      "ground": {
         "role": "neutral",
-        "displayName": "Ink",
-        "canonical": "#14161a",
+        "displayName": "Moonlit Ground",
+        "canonical": "#eef3fa",
         "tonalRamp": [
-          "#090b0f",
-          "#24262b",
-          "#43454a",
-          "#64666b",
-          "#86898e",
-          "#abaeb4",
-          "#ced1d7",
-          "#ebeef4"
+          "#11233b",
+          "#1f3d68",
+          "#2c5895",
+          "#3972c2",
+          "#6492d1",
+          "#91b2df",
+          "#bed1ec",
+          "#ebf1f9"
         ]
       },
-      "ink-2": {
+      "ground-2": {
         "role": "neutral",
-        "displayName": "Ink 2",
-        "canonical": "#3f4652",
+        "displayName": "Ground Shade",
+        "canonical": "#e2eaf5",
         "tonalRamp": [
-          "#060b15",
-          "#202732",
-          "#3e4551",
-          "#5f6673",
-          "#828a97",
-          "#a6aebd",
-          "#c9d1e0",
-          "#e6effe"
+          "#142339",
+          "#233e64",
+          "#325990",
+          "#4074bb",
+          "#6a93cc",
+          "#95b2db",
+          "#c1d2ea",
+          "#ecf1f8"
         ]
       },
-      "ink-3": {
+      "panel": {
         "role": "neutral",
-        "displayName": "Ink 3",
-        "canonical": "#59606c",
-        "tonalRamp": [
-          "#070b14",
-          "#212731",
-          "#3f4551",
-          "#5f6673",
-          "#828a96",
-          "#a7aebc",
-          "#c9d1df",
-          "#e7effd"
-        ]
-      },
-      "floor": {
-        "role": "neutral",
-        "displayName": "Floor",
-        "canonical": "#edf0f5",
-        "tonalRamp": [
-          "#090b0e",
-          "#24272a",
-          "#434549",
-          "#64666a",
-          "#87898e",
-          "#abaeb3",
-          "#ced1d6",
-          "#eceff4"
-        ]
-      },
-      "shelf": {
-        "role": "neutral",
-        "displayName": "Shelf",
+        "displayName": "Panel White",
         "canonical": "#ffffff",
         "tonalRamp": [
-          "#0b0b0b",
           "#262626",
-          "#454545",
-          "#666666",
-          "#898989",
-          "#aeaeae",
-          "#d1d1d1",
-          "#eeeeee"
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
         ]
       },
-      "shelf-2": {
+      "panel-2": {
         "role": "neutral",
-        "displayName": "Shelf 2",
-        "canonical": "#f6f8fb",
+        "displayName": "Panel Mist",
+        "canonical": "#f5f8fd",
         "tonalRamp": [
-          "#0a0b0d",
-          "#252629",
-          "#434547",
-          "#646669",
-          "#87898c",
-          "#acaeb1",
-          "#cfd1d4",
-          "#edeff1"
+          "#0d2040",
+          "#163870",
+          "#2050a1",
+          "#2a69d1",
+          "#588ade",
+          "#89ace7",
+          "#b9cef1",
+          "#eaf0fb"
         ]
       },
       "line": {
         "role": "neutral",
-        "displayName": "Line",
-        "canonical": "#d9dfe8",
+        "displayName": "Hairline",
+        "canonical": "#d6dfec",
         "tonalRamp": [
-          "#080b11",
-          "#22272d",
-          "#41454d",
-          "#61666e",
-          "#848a92",
-          "#a9aeb7",
-          "#cbd1da",
-          "#e9eff8"
+          "#182434",
+          "#2b3f5c",
+          "#3d5a84",
+          "#5075ac",
+          "#7694c0",
+          "#9eb3d2",
+          "#c6d2e4",
+          "#eef1f7"
         ]
       },
       "line-strong": {
         "role": "neutral",
-        "displayName": "Line Strong",
-        "canonical": "#c3cbd6",
+        "displayName": "Strong Hairline",
+        "canonical": "#b9c6d9",
         "tonalRamp": [
-          "#070b13",
-          "#21272f",
-          "#3f464f",
-          "#606770",
-          "#828a94",
-          "#a7afb9",
-          "#cad2dd",
-          "#e7effb"
+          "#1b2432",
+          "#2f4057",
+          "#445b7d",
+          "#5877a3",
+          "#7d95b9",
+          "#a3b4cd",
+          "#c9d3e2",
+          "#eef2f6"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Midnight Ink",
+        "canonical": "#0b1a3a",
+        "tonalRamp": [
+          "#0c1d40",
+          "#153371",
+          "#1f49a2",
+          "#285fd3",
+          "#5782df",
+          "#88a6e8",
+          "#b9cbf2",
+          "#eaeffb"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Dusk Ink",
+        "canonical": "#34446a",
+        "tonalRamp": [
+          "#192133",
+          "#2c3a5a",
+          "#405382",
+          "#536ca9",
+          "#798dbd",
+          "#a0aed0",
+          "#c7cfe3",
+          "#eef0f7"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Mist Ink",
+        "canonical": "#56658a",
+        "tonalRamp": [
+          "#1d222f",
+          "#343d53",
+          "#4a5777",
+          "#61719b",
+          "#8491b2",
+          "#a7b1c8",
+          "#cbd1df",
+          "#eff1f5"
+        ]
+      },
+      "on-navy": {
+        "role": "neutral",
+        "displayName": "On-Navy",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "on-navy-2": {
+        "role": "neutral",
+        "displayName": "On-Navy Muted",
+        "canonical": "#b9c8ea",
+        "tonalRamp": [
+          "#121e3b",
+          "#1f3568",
+          "#2d4c95",
+          "#3a63c1",
+          "#6586d1",
+          "#92a9de",
+          "#bfccec",
+          "#ebf0f9"
+        ]
+      },
+      "navy": {
+        "role": "neutral",
+        "displayName": "Midnight Navy",
+        "canonical": "#0b1a3a",
+        "tonalRamp": [
+          "#0c1d40",
+          "#153371",
+          "#1f49a2",
+          "#285fd3",
+          "#5782df",
+          "#88a6e8",
+          "#b9cbf2",
+          "#eaeffb"
+        ]
+      },
+      "blue": {
+        "role": "primary",
+        "displayName": "Reload Blue",
+        "canonical": "#1f5fff",
+        "tonalRamp": [
+          "#00164c",
+          "#002787",
+          "#0037c1",
+          "#0048fb",
+          "#3770ff",
+          "#719aff",
+          "#abc3ff",
+          "#e6edff"
+        ]
+      },
+      "blue-deep": {
+        "role": "primary",
+        "displayName": "Reload Blue Deep",
+        "canonical": "#1747c9",
+        "tonalRamp": [
+          "#081845",
+          "#0e2b79",
+          "#143dad",
+          "#1a50e2",
+          "#4b76ea",
+          "#809ef0",
+          "#b4c6f6",
+          "#e8eefc"
+        ]
+      },
+      "blue-tint": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "#e6eeff",
+        "tonalRamp": [
+          "#00184c",
+          "#002b87",
+          "#003ec1",
+          "#0050fb",
+          "#3777ff",
+          "#719eff",
+          "#abc6ff",
+          "#e6eeff"
+        ]
+      },
+      "cyan": {
+        "role": "secondary",
+        "displayName": "Moonlight Cyan",
+        "canonical": "#2fd3ff",
+        "tonalRamp": [
+          "#003c4c",
+          "#006a87",
+          "#0098c1",
+          "#00c6fb",
+          "#37d5ff",
+          "#71e1ff",
+          "#abedff",
+          "#e6faff"
+        ]
+      },
+      "cyan-tint": {
+        "role": "secondary",
+        "displayName": "Cyan Wash",
+        "canonical": "#ddf6ff",
+        "tonalRamp": [
+          "#00384c",
+          "#006387",
+          "#008ec1",
+          "#00b9fb",
+          "#37caff",
+          "#71d9ff",
+          "#abe9ff",
+          "#e6f8ff"
+        ]
+      },
+      "cyan-line": {
+        "role": "secondary",
+        "displayName": "Cyan Edge",
+        "canonical": "#9fe3f7",
+        "tonalRamp": [
+          "#063847",
+          "#0a627c",
+          "#0f8db2",
+          "#13b8e8",
+          "#46c9f0",
+          "#7cd9f4",
+          "#b2e8f9",
+          "#e7f8fd"
+        ]
+      },
+      "cyan-ink": {
+        "role": "secondary",
+        "displayName": "Deep Cyan",
+        "canonical": "#006f8f",
+        "tonalRamp": [
+          "#003b4c",
+          "#006987",
+          "#0096c1",
+          "#00c3fb",
+          "#37d2ff",
+          "#71dfff",
+          "#abecff",
+          "#e6f9ff"
+        ]
+      },
+      "danger": {
+        "role": "error",
+        "displayName": "Danger",
+        "canonical": "#c42a43",
+        "tonalRamp": [
+          "#3f0e16",
+          "#6f1826",
+          "#9f2236",
+          "#cf2c47",
+          "#dc5a6f",
+          "#e68a99",
+          "#f0bac3",
+          "#fbeaed"
+        ]
+      },
+      "danger-tint": {
+        "role": "error",
+        "displayName": "Danger Wash",
+        "canonical": "#fde9ec",
+        "tonalRamp": [
+          "#460610",
+          "#7c0b1c",
+          "#b11028",
+          "#e61534",
+          "#ee4760",
+          "#f37d8f",
+          "#f8b2bd",
+          "#fde8eb"
         ]
       }
     },
     "typographyMeta": {
-      "price": {
-        "displayName": "Price",
-        "purpose": "Red mincho numerals on the yellow price card."
-      },
-      "total": {
-        "displayName": "Total",
-        "purpose": "The till total and large money readouts."
-      },
-      "brand": {
-        "displayName": "Brand",
-        "purpose": "The Wishlist wordmark."
+      "display": {
+        "displayName": "Calendar Numerals",
+        "purpose": "The calendar date only; 800 italic."
       },
       "headline": {
-        "displayName": "Headline",
-        "purpose": "Empty-state and dialog headings."
+        "displayName": "Price Numerals",
+        "purpose": "Band prices, the total and readout figures; 800 italic."
       },
       "title": {
-        "displayName": "Title",
-        "purpose": "Register card titles."
-      },
-      "item-title": {
-        "displayName": "Item Title",
-        "purpose": "Product names on cards, two-line clamp."
-      },
-      "usd": {
-        "displayName": "USD",
-        "purpose": "Dollar cost on the price card."
+        "displayName": "Panel Title",
+        "purpose": "Slanted navy panel and editor headers; 800 italic uppercase."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Running text and inputs."
-      },
-      "control": {
-        "displayName": "Control",
-        "purpose": "Button labels."
+        "purpose": "Item titles, receipt rows, prose; tabular numerals."
       },
       "label": {
-        "displayName": "Label",
-        "purpose": "Field labels, tags, badges, sale band; 12px floor."
+        "displayName": "Menu Label",
+        "purpose": "Tabs, buttons, segments, field labels, store flags; 700 uppercase."
       }
-    },
-    "fontLoading": {
-      "source": "Self-hosted in public/fonts (Shippori Mincho B1 700/800, Zen Kaku Gothic New 400/500/700), unicode-range subsets from Google Fonts, font-display: swap",
-      "offlineFallback": "Hiragino Mincho ProN / Hiragino Kaku Gothic ProN",
-      "status": "decided: bundled for offline use (owner's choice)",
-      "extensionPopup": "Hiragino-first system stacks, no CDN faces"
     },
     "shadows": [
       {
         "name": "lift",
-        "value": "0 1px 2px rgba(10,30,60,.06), 0 4px 14px rgba(10,30,60,.06)",
-        "purpose": "Resting shelf cards, register cards, empty state."
+        "value": "0 1px 2px rgba(11,26,58,.06), 0 6px 18px rgba(11,26,58,.07)",
+        "purpose": "Cards and panels at rest."
       },
       {
         "name": "lift-hi",
-        "value": "0 2px 4px rgba(10,30,60,.08), 0 12px 28px rgba(10,30,60,.12)",
-        "purpose": "Card hover and toasts."
-      },
-      {
-        "name": "add-bar",
-        "value": "0 6px 20px rgba(0,0,0,.22)",
-        "purpose": "The white add-link bar on the blue header."
+        "value": "0 2px 4px rgba(11,26,58,.08), 0 14px 32px rgba(11,26,58,.13)",
+        "purpose": "Card hover, toasts, new-item arrival."
       },
       {
         "name": "dialog",
-        "value": "0 24px 60px rgba(6,30,70,.35)",
-        "purpose": "Item editor dialog; backdrop rgba(8,30,66,.5)."
-      },
-      {
-        "name": "price-card-edge",
-        "value": "inset 0 0 0 1px #f2c700",
-        "purpose": "Crisp inner edge of the yellow price card."
-      },
-      {
-        "name": "shelf-rail",
-        "value": "0 1px 0 #9eaabb, 0 3px 6px rgba(10,30,60,.08)",
-        "purpose": "Lip and soft drop of the rail under each card (rail face: linear-gradient(#fff 0 4px, #dde3ec 4px), 9px tall, 9px overhang)."
+        "value": "0 24px 60px rgba(11,26,58,.3)",
+        "purpose": "The item editor over a navy 45% backdrop."
       },
       {
         "name": "focus",
-        "value": "0 0 0 3px rgba(10,78,162,.35)",
+        "value": "0 0 0 3px rgba(31,95,255,.35)",
         "purpose": "Focus ring on every interactive element."
       }
     ],
     "motion": [
       {
-        "name": "ease-arrive",
-        "value": "cubic-bezier(.16, 1, .3, 1)",
-        "purpose": "New card arrival (1.6s, yellow ring) and toast rise (.25s)."
+        "name": "slant",
+        "value": "skewX(-12deg)",
+        "purpose": "The one slant for tabs, buttons, flags, headers, price band and calendar; content counter-skewed 12deg."
+      },
+      {
+        "name": "back-plane",
+        "value": "skewX(-24deg)",
+        "purpose": "Calendar back plane only."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Selection sweep, item arrival, toast rise."
+      },
+      {
+        "name": "sweep",
+        "value": "scaleX(0 to 1) from left, 0.34s",
+        "purpose": "Cyan selection bar on the owner's click only."
+      },
+      {
+        "name": "arrive",
+        "value": "translateX(-24px) skewX(-6deg) to none, 1.4s",
+        "purpose": "A new item slides in along the slant."
+      },
+      {
+        "name": "rise",
+        "value": "translateY(10px) fade, 0.25s",
+        "purpose": "Toast entry."
       },
       {
         "name": "state",
-        "value": ".15s",
-        "purpose": "Button color, border and shadow transitions; .1s press."
-      },
-      {
-        "name": "card-hover",
-        "value": ".2s",
-        "purpose": "Card shadow and border on hover."
+        "value": "0.15s",
+        "purpose": "Button and tab color/stroke transitions."
       },
       {
         "name": "reduced-motion",
-        "value": "animation/transition off",
-        "purpose": "All motion collapses under prefers-reduced-motion."
+        "value": "prefers-reduced-motion: animations and transitions cut to near zero",
+        "purpose": "Honored globally."
       }
     ],
     "breakpoints": [
       {
-        "name": "register-narrow",
+        "name": "compact-panel",
         "value": "1080px"
       },
       {
-        "name": "stack",
+        "name": "header-stack",
+        "value": "900px"
+      },
+      {
+        "name": "single-column",
         "value": "860px"
       },
       {
@@ -456,148 +424,126 @@
         "value": "600px"
       },
       {
-        "name": "single-column",
+        "name": "narrow",
         "value": "360px"
       }
     ]
   },
   "components": [
     {
-      "name": "Add Button (POP)",
+      "name": "Go Button",
       "kind": "button",
-      "refersTo": "button-pop",
-      "description": "The one yellow action: add to wishlist.",
-      "html": "<button class=\"ds-btn ds-btn-pop\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg>Add to wishlist</button>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:700 14px/1.5 var(--gothic);letter-spacing:.01em;cursor:pointer;transition:background-color .15s,border-color .15s,box-shadow .15s,transform .1s} .ds-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round} .ds-btn:active{transform:translateY(1px)} .ds-btn:focus-visible{outline:none;box-shadow:var(--focus)} .ds-btn-pop{background:var(--pop);color:var(--ink);border-color:var(--pop-deep)} .ds-btn-pop:hover{background:#ffea3d}"
-    },
-    {
-      "name": "Blue Button",
-      "kind": "button",
-      "refersTo": "button-blue",
-      "description": "Buy and Save actions.",
-      "html": "<button class=\"ds-btn ds-btn-blue\">Buy <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5\"/></svg></button>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:700 14px/1.5 var(--gothic);letter-spacing:.01em;cursor:pointer;transition:background-color .15s,border-color .15s,box-shadow .15s,transform .1s} .ds-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round} .ds-btn:active{transform:translateY(1px)} .ds-btn:focus-visible{outline:none;box-shadow:var(--focus)} .ds-btn-blue{background:var(--blue);color:#fff} .ds-btn-blue:hover{background:var(--blue-deep)}"
+      "refersTo": "button-go",
+      "description": "Primary action (Add to Wishlist, Buy): slanted Reload-blue plane, label upright.",
+      "html": "<button class=\"ds-btn ds-btn-go\"><span>Add to Wishlist</span></button>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 18px;border:0;border-radius:0;font:700 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transform:skewX(var(--slant));transition:background-color .15s,color .15s,box-shadow .15s}.ds-btn>span{display:inline-block;transform:skewX(var(--unslant))}.ds-btn-go{background:var(--blue);color:#fff}.ds-btn-go:hover{background:var(--blue-deep)}.ds-btn:focus-visible{outline:none;box-shadow:var(--focus)}"
     },
     {
       "name": "Quiet Button",
       "kind": "button",
       "refersTo": "button-quiet",
-      "description": "Secondary actions such as Refresh prices and Cancel.",
-      "html": "<button class=\"ds-btn ds-btn-quiet\">Refresh prices</button>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:700 14px/1.5 var(--gothic);letter-spacing:.01em;cursor:pointer;transition:background-color .15s,border-color .15s,box-shadow .15s,transform .1s} .ds-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round} .ds-btn:active{transform:translateY(1px)} .ds-btn:focus-visible{outline:none;box-shadow:var(--focus)} .ds-btn-quiet{background:var(--shelf);color:var(--ink-2);border-color:var(--line-strong)} .ds-btn-quiet:hover{border-color:var(--blue-line);color:var(--blue);background:var(--blue-tint)}"
+      "description": "Secondary action (Refresh prices, Cancel): white slanted plane with hairline inset.",
+      "html": "<button class=\"ds-btn-quiet\"><span>Refresh prices</span></button>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-btn-quiet{display:inline-flex;align-items:center;min-height:38px;padding:0 18px;border:0;border-radius:0;font:700 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--panel);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-strong);cursor:pointer;transform:skewX(var(--slant))}.ds-btn-quiet>span{display:inline-block;transform:skewX(var(--unslant))}.ds-btn-quiet:hover{color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.ds-btn-quiet:focus-visible{outline:none;box-shadow:var(--focus)}"
     },
     {
       "name": "Category Tabs",
-      "kind": "chip",
-      "refersTo": "tab",
-      "description": "Pill tabs; selected fills ink with a yellow count.",
-      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab\" aria-selected=\"true\">All items <span>7</span></button><button class=\"ds-tab\">Tech <span>4</span></button></div>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-tabs{display:flex;gap:6px} .ds-tab{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line-strong);background:var(--shelf);color:var(--ink-2);font:500 14px var(--gothic);cursor:pointer} .ds-tab span{font-size:12px;font-weight:700;color:var(--ink-3)} .ds-tab:hover{border-color:var(--blue-line);color:var(--blue)} .ds-tab:focus-visible{outline:none;box-shadow:var(--focus)} .ds-tab[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff} .ds-tab[aria-selected=true] span{color:var(--pop)}"
-    },
-    {
-      "name": "Price Card",
-      "kind": "custom",
-      "refersTo": "price-card",
-      "description": "The signature POP card: sale band, red mincho price, USD cost, Domestic/Import toggle.",
-      "html": "<div class=\"ds-pc\"><div class=\"ds-sale\"><span>SALE −14%</span><s>CN¥4,299</s></div><div class=\"ds-pc-main\"><span class=\"ds-yen\"><small>CN¥</small>3,699</span><div class=\"ds-usd\"><strong>$551.85</strong><small>1 CNY = $0.1492</small></div></div><div class=\"ds-buyway\"><button aria-pressed=\"false\">Domestic</button><button aria-pressed=\"true\">Import</button></div></div>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-pc{width:220px;border-radius:6px;background:var(--pop);color:var(--ink);box-shadow:inset 0 0 0 1px var(--pop-deep);overflow:hidden;font-family:var(--gothic)} .ds-sale{display:flex;justify-content:space-between;padding:4px 10px;background:var(--red);color:#fff;font-weight:700;font-size:12px;letter-spacing:.04em} .ds-sale s{font-weight:500;letter-spacing:0} .ds-pc-main{padding:9px 12px 10px} .ds-yen{font:800 46px/1 var(--mincho);color:var(--red);letter-spacing:-.02em} .ds-yen small{font-size:.5em;letter-spacing:0;margin-right:2px} .ds-usd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:4px;font-size:12px;color:var(--ink-2)} .ds-usd strong{font:700 17px/1.2 var(--mincho);color:var(--ink)} .ds-buyway{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--pop-deep);background:#fff6a6} .ds-buyway button{height:30px;border:0;background:transparent;font:700 12px var(--gothic);color:var(--ink-2);cursor:pointer} .ds-buyway button+button{border-left:1px solid var(--pop-deep)} .ds-buyway button:hover{background:#fff07a} .ds-buyway button:focus-visible{outline:none;box-shadow:var(--focus)} .ds-buyway button[aria-pressed=true]{background:var(--ink);color:#fff}"
-    },
-    {
-      "name": "Shelf Card",
-      "kind": "card",
-      "refersTo": "item-card",
-      "description": "White product card lifted off the floor, standing on its shelf rail.",
-      "html": "<div class=\"ds-floor\"><article class=\"ds-card\"><div class=\"ds-plate\">B</div><div class=\"ds-info\"><div class=\"ds-store\">Bic Camera <small>ビックカメラ</small></div><a class=\"ds-title\" href=\"#\">【純正】iPhone／iPad 対応 Lightning - SDカードカメラリーダー</a></div></article></div>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-floor{background:var(--floor);padding:20px 24px 32px} .ds-card{position:relative;width:232px;background:var(--shelf);border:1px solid var(--line);border-radius:10px;box-shadow:var(--lift);transition:box-shadow .2s,border-color .2s;font-family:var(--gothic)} .ds-card:hover{box-shadow:var(--lift-hi);border-color:var(--line-strong)} .ds-card::after{content:'';position:absolute;left:-9px;right:-9px;bottom:-9px;height:9px;border-radius:0 0 3px 3px;background:linear-gradient(#fff 0 4px,#dde3ec 4px);box-shadow:0 1px 0 #9eaabb,0 3px 6px rgba(10,30,60,.08);z-index:-1} .ds-plate{display:grid;place-items:center;aspect-ratio:1;margin:14px;border-radius:6px;background:var(--shelf-2);color:var(--ink-3);font:800 40px/1 var(--mincho)} .ds-info{padding:0 14px 14px;display:grid;gap:4px} .ds-store{font-size:12px;font-weight:700;color:var(--blue)} .ds-store small{font-weight:500;color:var(--ink-3);font-size:12px} .ds-title{font:700 15px/1.35 var(--mincho);color:var(--ink);text-decoration:none} .ds-title:hover{color:var(--blue);text-decoration:underline} .ds-title:focus-visible{outline:none;box-shadow:var(--focus);border-radius:6px}"
-    },
-    {
-      "name": "Register Till",
-      "kind": "card",
-      "refersTo": "register-till",
-      "description": "Store-blue total card with dashed receipt rows and the yellow total.",
-      "html": "<section class=\"ds-till\"><h2>Your total</h2><dl><div><dt>9 items from 7 stores</dt><dd>$1,683.73</dd></div><div class=\"ds-save\"><dt>Sale savings included</dt><dd>−$97.04</dd></div><div class=\"ds-total\"><dt>Total in USD</dt><dd>$2,037.46</dd></div></dl></section>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-till{width:320px;padding:16px 18px;border-radius:10px;background:var(--blue);border:1px solid var(--blue-deep);color:#fff;box-shadow:var(--lift);font:400 14px/1.5 var(--gothic)} .ds-till h2{margin:0;font:800 18px/1.3 var(--mincho)} .ds-till dl{margin:12px 0 0;display:grid} .ds-till dl div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.28)} .ds-till dt{color:#dce7f7} .ds-till dd{margin:0;font-weight:700} .ds-save dd{color:#7ff0a6} .ds-till .ds-total{border-bottom:0;padding:12px 12px 10px;margin-top:10px;border-radius:6px;background:var(--pop)} .ds-total dt{font:800 16px/1.2 var(--mincho);color:var(--ink)} .ds-total dd{font:800 32px/1 var(--mincho);color:var(--red)}"
-    },
-    {
-      "name": "Affix Field",
-      "kind": "input",
-      "refersTo": "field",
-      "description": "Labelled field with a fused unit cell; blue border and ring on focus.",
-      "html": "<label class=\"ds-field\"><span>Already saved</span><span class=\"ds-affix\"><i>$</i><input type=\"number\" value=\"250\"></span></label>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-field{display:grid;gap:5px;width:200px;font-family:var(--gothic)} .ds-field>span:first-child{font-size:12px;font-weight:700;color:var(--ink-2)} .ds-affix{display:flex;height:38px;border:1px solid var(--line-strong);border-radius:6px;background:#fff;overflow:hidden} .ds-affix:focus-within{border-color:var(--blue);box-shadow:var(--focus)} .ds-affix i{display:grid;place-items:center;padding:0 9px;font-style:normal;font-size:12px;font-weight:700;color:var(--ink-3);background:var(--shelf-2)} .ds-affix input{flex:1;min-width:0;border:0;outline:0;padding:0 10px;font:400 14px var(--gothic);color:var(--ink);background:transparent}"
-    },
-    {
-      "name": "Store Header",
       "kind": "nav",
-      "refersTo": "store-header",
-      "description": "Blue store band with the yellow tag mark, rates pill, add bar and the 4px yellow shelf-edge stripe.",
-      "html": "<header class=\"ds-head\"><div class=\"ds-row\"><span class=\"ds-brand\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"M5 8h15l7 8-7 8H5z\"/><circle cx=\"10\" cy=\"16\" r=\"2.2\"/></svg>Wishlist</span><span class=\"ds-rates\"><i></i>Today's rates · $1 = ¥158.0</span></div><form class=\"ds-add\" onsubmit=\"return false\"><input placeholder=\"Paste a product link…\" aria-label=\"Product link\"><button class=\"ds-addbtn\">Add to wishlist</button></form></header>",
-      "css": ":host{--floor:#edf0f5;--shelf:#fff;--shelf-2:#f6f8fb;--line:#d9dfe8;--line-strong:#c3cbd6;--ink:#14161a;--ink-2:#3f4652;--ink-3:#59606c;--blue:#0a4ea2;--blue-deep:#083b7b;--blue-tint:#e6eefa;--blue-line:#b9cdec;--pop:#ffe100;--pop-deep:#f2c700;--pop-tint:#fff8c2;--red:#e60012;--red-ink:#b3000e;--green:#00813a;--mincho:\"Shippori Mincho B1\",\"Hiragino Mincho ProN\",\"Yu Mincho\",serif;--gothic:\"Zen Kaku Gothic New\",\"Hiragino Kaku Gothic ProN\",\"Hiragino Sans\",system-ui,sans-serif;--focus:0 0 0 3px rgba(10,78,162,.35);--lift:0 1px 2px rgba(10,30,60,.06),0 4px 14px rgba(10,30,60,.06);--lift-hi:0 2px 4px rgba(10,30,60,.08),0 12px 28px rgba(10,30,60,.12);font-variant-numeric:tabular-nums} .ds-head{background:var(--blue);color:#fff;padding:18px 24px 20px;border-bottom:4px solid var(--pop);font-family:var(--gothic)} .ds-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px} .ds-brand{display:inline-flex;align-items:center;gap:10px;font:800 26px/1 var(--mincho)} .ds-brand svg{width:34px;height:34px} .ds-brand path{fill:var(--pop)} .ds-brand circle{fill:var(--blue)} .ds-rates{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--blue-deep);font-size:13px;color:#dce7f7} .ds-rates i{width:8px;height:8px;border-radius:50%;background:#5fe08f} .ds-add{display:flex;gap:8px;padding:6px;background:#fff;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.22)} .ds-add input{flex:1;border:0;outline:0;padding:0 12px;font:400 16px var(--gothic);color:var(--ink)} .ds-addbtn{min-height:46px;padding:0 22px;border:1px solid var(--pop-deep);border-radius:6px;background:var(--pop);color:var(--ink);font:700 15px var(--gothic);cursor:pointer} .ds-addbtn:hover{background:#ffea3d} .ds-addbtn:focus-visible{outline:none;box-shadow:var(--focus)}"
+      "refersTo": "tab",
+      "description": "Slanted tabs; the selected tab is a cyan bar behind a 2px navy stroke that sweeps in on click.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab\" aria-selected=\"true\"><span>All items <i>7</i></span></button><button class=\"ds-tab\"><span>Everyday <i>1</i></span></button><button class=\"ds-tab\"><span>Tech <i>4</i></span></button></div>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-tabs{display:flex;gap:8px;padding-left:4px}.ds-tab{position:relative;isolation:isolate;display:inline-flex;align-items:center;height:34px;padding:0 16px;border:0;background:var(--panel);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-strong);font:700 16px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transform:skewX(var(--slant))}.ds-tab>span{display:inline-flex;gap:8px;align-items:baseline;transform:skewX(var(--unslant))}.ds-tab i{font:600 13px/1 var(--text);font-style:normal;color:var(--ink-3)}.ds-tab:hover{color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}.ds-tab[aria-selected=true]{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}.ds-tab[aria-selected=true]::before{content:'';position:absolute;inset:0;background:var(--cyan);z-index:-1;transform-origin:left center;animation:ds-sweep .34s cubic-bezier(.16,1,.3,1)}.ds-tab[aria-selected=true] i{color:var(--ink)}.ds-tab:focus-visible{outline:none;box-shadow:var(--focus)}@keyframes ds-sweep{from{transform:scaleX(0)}to{transform:scaleX(1)}}@media (prefers-reduced-motion:reduce){.ds-tab::before{animation:none!important}}"
+    },
+    {
+      "name": "Price Band",
+      "kind": "custom",
+      "refersTo": "price-band",
+      "description": "Signature: navy -12° band with heavy italic price, cyan currency sign, cyan USD line and overhanging sale marker.",
+      "html": "<div class=\"ds-band\"><span class=\"ds-sale\">-14%</span><div class=\"ds-was\">was CN¥4,299</div><div class=\"ds-num\"><span>CN¥</span>3,699</div><div class=\"ds-usd\"><strong>$551.85</strong><span>1 CNY = $0.1492</span></div></div>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-band{position:relative;display:grid;gap:2px;max-width:260px;margin:16px 6px 0;padding:10px 18px 10px 16px;background:var(--navy);color:#fff;transform:skewX(var(--slant))}.ds-band>*{transform:skewX(var(--unslant))}.ds-sale{position:absolute;top:-12px;right:8px;padding:4px 10px;background:var(--cyan);color:var(--ink);font:italic 800 15px/1 var(--display);letter-spacing:.04em}.ds-was{font:500 12px/1.2 var(--text);color:var(--on-navy-2)}.ds-num{font:italic 800 42px/1 var(--display);font-variant-numeric:tabular-nums}.ds-num span{font-size:.5em;margin-right:3px;color:var(--cyan)}.ds-usd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:12px var(--text);color:var(--on-navy-2)}.ds-usd strong{font:italic 700 21px/1.1 var(--display);color:var(--cyan)}"
+    },
+    {
+      "name": "Calendar Block",
+      "kind": "custom",
+      "description": "Signature header block: navy -12° panel with the date, weekday, moon phase and live rate, backed by a Reload-blue -24° plane on the right half.",
+      "html": "<div class=\"ds-cal-stack\"><div class=\"ds-cal\"><div class=\"ds-date\">10<small>/</small>17</div><div class=\"ds-day\">Sat <em>Evening</em></div><div class=\"ds-rate\"><i></i>$1 = <b>¥158.0</b> · <b>CN¥6.70</b></div></div></div>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-cal-stack{position:relative;isolation:isolate;display:inline-block;margin:14px 30px 14px 10px}.ds-cal-stack::before{content:'';position:absolute;top:-10px;bottom:-12px;left:52%;right:-22px;background:var(--blue);transform:skewX(-24deg);z-index:-1}.ds-cal{display:grid;grid-template-columns:auto auto;column-gap:16px;row-gap:4px;align-items:center;padding:14px 38px 14px 30px;background:var(--navy);color:#fff;transform:skewX(var(--slant))}.ds-cal>*{transform:skewX(var(--unslant))}.ds-date{grid-row:span 2;font:italic 800 78px/.85 var(--display);letter-spacing:-.02em}.ds-date small{font-size:.55em;color:var(--on-navy-2)}.ds-day{font:italic 700 19px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan)}.ds-day em{font-style:normal;font-size:15px;color:var(--on-navy-2)}.ds-rate{font:500 13px/1.3 var(--text);color:var(--on-navy-2);white-space:nowrap}.ds-rate b{color:#fff;font-weight:600}.ds-rate i{display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:var(--cyan)}"
+    },
+    {
+      "name": "Item Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Upright white card, 4px radius, soft navy lift; carries a slanted navy store flag with cyan country code.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-plate\"><span class=\"ds-flag\"><span><b>JP</b>Bic Camera</span></span></div><div class=\"ds-info\"><a class=\"ds-title\" href=\"#\">Lightning SD card camera reader</a><span class=\"ds-tag\">Tech</span></div></article>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-card{width:240px;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:var(--lift);transition:box-shadow .2s,border-color .2s}.ds-card:hover{box-shadow:var(--lift-hi);border-color:var(--line-strong)}.ds-plate{position:relative;aspect-ratio:1/1;background:var(--panel-2);border-bottom:1px solid var(--line);border-radius:4px 4px 0 0}.ds-flag{position:absolute;top:10px;left:12px;display:inline-flex;align-items:center;height:24px;padding:0 11px;background:var(--navy);color:#fff;font:700 14px/1 var(--display);letter-spacing:.07em;text-transform:uppercase;transform:skewX(var(--slant))}.ds-flag>span{transform:skewX(var(--unslant))}.ds-flag b{color:var(--cyan);margin-right:6px}.ds-info{display:grid;gap:5px;padding:12px 14px}.ds-title{font:600 15px/1.35 var(--text);color:var(--ink);text-decoration:none}.ds-title:hover{color:var(--blue);text-decoration:underline}.ds-tag{justify-self:start;display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:2px;font:600 12px/1 var(--text);background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line)}"
+    },
+    {
+      "name": "Panel Header",
+      "kind": "custom",
+      "refersTo": "panel-header",
+      "description": "Navy slanted plate hung off the top-left of status panels and the editor.",
+      "html": "<section class=\"ds-reg\"><h2 class=\"ds-reg-title\"><span>Total</span></h2><p>8 items from 7 stores</p></section>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-reg{width:300px;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:var(--lift);padding:0 18px 16px;font:15px/1.5 var(--text);color:var(--ink-2)}.ds-reg-title{display:inline-block;margin:-1px 8px 6px -10px;padding:9px 26px 8px 22px;background:var(--navy);color:#fff;font:italic 800 22px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;transform:skewX(var(--slant))}.ds-reg-title>span{display:inline-block;transform:skewX(var(--unslant))}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Upright 38px field with uppercase condensed label; blue border and ring on focus.",
+      "html": "<label class=\"ds-field\"><span>Already saved</span><input value=\"0\"></label>",
+      "css": ":host{--ground:#eef3fa;--panel:#fff;--panel-2:#f5f8fd;--line:#d6dfec;--line-strong:#b9c6d9;--ink:#0b1a3a;--ink-2:#34446a;--ink-3:#56658a;--on-navy-2:#b9c8ea;--navy:#0b1a3a;--blue:#1f5fff;--blue-deep:#1747c9;--blue-tint:#e6eeff;--cyan:#2fd3ff;--cyan-tint:#ddf6ff;--cyan-line:#9fe3f7;--display:'Barlow Condensed','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;--text:'Barlow','Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',system-ui,sans-serif;--slant:-12deg;--unslant:12deg;--focus:0 0 0 3px rgba(31,95,255,.35);--lift:0 1px 2px rgba(11,26,58,.06),0 6px 18px rgba(11,26,58,.07);--lift-hi:0 2px 4px rgba(11,26,58,.08),0 14px 32px rgba(11,26,58,.13)} .ds-field{display:grid;gap:5px;width:220px}.ds-field>span{font:700 13px/1.2 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}.ds-field input{height:38px;padding:0 10px;border:1px solid var(--line-strong);border-radius:4px;background:#fff;color:var(--ink);font:15px var(--text)}.ds-field input:focus{outline:0;border-color:var(--blue);box-shadow:var(--focus)}"
     }
   ],
   "narrative": {
-    "northStar": "The Shelf POP",
-    "overview": "**Creative North Star: \"The Shelf POP\"**\n\nEvery wished-for thing is priced the way a Tokyo electronics store (Bic Camera, Yodobashi) prices a shelf: a white product card standing on a shelf rail, and under it a bright yellow POP price card with the price in big red mincho numerals and its dollar cost beneath. The app shell is the store itself: a store-blue header with a yellow shelf-edge stripe, and a store-blue \"register\" column that rings up the total on another yellow card. The look turns down the generic finance dashboard, a gray table with one blue accent.\n\nThe palette is saturated and flat: store blue, POP yellow and price red do the talking, on a cool light-gray floor with white shelf cards. Type pairs a heavy Japanese mincho serif for prices, titles and totals with a clean Japanese gothic for controls, labels and body text, so Japanese and Chinese product names read as native text. Every number uses tabular figures. Density is retail-shelf density: a grid of compact cards, each carrying a lot of information, organized by color blocks instead of whitespace.\n\nDepth is minimal and physical: cards lift slightly off the floor with a short, soft, blue-tinted shadow and stand on a rail that runs the width of their row. Everything else is flat color with crisp 1px edges.",
+    "northStar": "The Moonlit Menu",
+    "overview": "The wishlist reads like Persona 3 Reload's menus at night, transposed to a light theme: a pale moonlit ground, white panels square to the grid, deep navy ink, and a single fixed slant (-12°) that every active surface shares. Tabs, buttons, store flags, panel headers, the price band and the calendar block all lean the same way; their labels are set back upright inside them. Numbers are the heroes, set in heavy italic condensed numerals.\n\nThe palette is neutral by design (the owner asked for \"more neutral\"): navy and white carry the structure, Reload blue carries action, and moonlight cyan is reserved for what is selected or worth noticing. The world evokes the game's UI language only; it uses no logos, characters or game assets.\n\nDensity is a working tool's density: a card grid on the left, a sticky status panel on the right, the total and monthly plan always in view.",
     "keyCharacteristics": [
-      "Light theme only: cool gray floor (#edf0f5 family), white shelf cards.",
-      "Store blue frames the app; POP yellow carries price; red is reserved for price and sale.",
-      "Heavy mincho (800) for money and titles, gothic for everything you operate.",
-      "Flat fills, 1px edges, short soft shadows only on lifted cards and floating layers.",
-      "Stroked line icons (2px stroke, round caps and joins), inline SVG."
+      "One slant, -12°, shared by every interactive or heading plane; panels and cards stay upright.",
+      "Navy slanted bands carry prices and headers; heavy italic Barlow Condensed numerals sit on them.",
+      "Cyan marks selection and signal only, never decoration.",
+      "One layered device: the calendar's Reload-blue back plane.",
+      "Flat white panels with soft navy-tinted lift; square, unrounded slanted shapes."
     ],
     "rules": [
       {
-        "name": "The Price Card Rule",
-        "body": "Full-strength POP yellow belongs to price: the item price card, the till's total, the one Add action, and the shelf-edge stripe. Warnings use POP Tint, never full yellow.",
+        "name": "The Signal Cyan Rule",
+        "body": "Cyan appears only as a selection fill, a price signal (USD line, sale, drop, currency sign), the live-rate dot, or a small mark. There are no decorative cyan planes.",
         "section": "colors"
       },
       {
-        "name": "The Red Is Money Rule",
-        "body": "Price red appears only on prices, sale bands and the JP badge. Errors and danger use Red Ink, so a red number always means a price.",
+        "name": "The Neutral Ground Rule",
+        "body": "Everything that is not action, selection or price signal stays navy, white or blue-gray. No store-flyer yellow or red.",
         "section": "colors"
       },
       {
-        "name": "The Blue Shell Rule",
-        "body": "Store blue is the frame (header, register, dialog header, mobile bar) and the action color for Buy and Save. Selected states that sit on white or yellow use Ink, not blue.",
-        "section": "colors"
-      },
-      {
-        "name": "The Mincho Money Rule",
-        "body": "Any figure that is the point of its block (a price, a dollar cost, a total, a monthly amount) sets in mincho at 700 to 800. Small supporting figures (rates, landed costs, quantities) stay in gothic.",
+        "name": "The Italic Numeral Rule",
+        "body": "Money and dates are set in Barlow Condensed 800 italic; prose and product titles never are.",
         "section": "typography"
       },
       {
-        "name": "The Tabular Rule",
-        "body": "`font-variant-numeric: tabular-nums` is set on body; every number in the system lines up.",
-        "section": "typography"
-      },
-      {
-        "name": "The Shelf Rail Rule",
-        "body": "Each item card stands on a rail that overhangs it by 9px on each side and runs 9px tall below it: a 4px white top face over #dde3ec, rounded 3px at the bottom corners, with a 1px #9eaabb lip and a soft 3px shadow. On mobile it shrinks to 6px overhang, 8px height, 3px top face. Cards in a row share a height, so their rails read as one continuous shelf.",
+        "name": "The One Back Plane Rule",
+        "body": "The only layered plane is the calendar's: a Reload-blue blade at skewX(-24deg) behind the navy -12° panel, on its right half only, jutting past the right edge. Do not repeat the device elsewhere.",
         "section": "elevation"
       },
       {
-        "name": "The Arrive Rule",
-        "body": "A newly added card flashes a 4px POP-yellow ring and settles from 4px up over 1.6s on cubic-bezier(.16,1,.3,1). All motion collapses under prefers-reduced-motion.",
-        "section": "elevation"
+        "name": "The One Slant Rule",
+        "body": "Every slanted element uses exactly -12° (the calendar back plane's -24° is the sole exception). Panels and cards never lean.",
+        "section": "shapes"
       }
     ],
     "dos": [
-      "**Do** set every price on a POP-yellow card in red mincho 800 numerals, with its USD cost beneath in ink mincho.",
-      "**Do** keep red-on-yellow numerals at display size (24px and up, weight 800); smaller copy on yellow is Ink or Ink 2.",
-      "**Do** frame new surfaces in the store shell: Store Blue band, 4px (3px when compact) POP-yellow shelf-edge stripe, white shelf cards on the cool gray Floor.",
-      "**Do** use the gothic for every control, label and body line, and the mincho for prices, totals and titles.",
-      "**Do** use 10px corners for containers, 6px for anything inside them, 4px for badges, pills only for tabs, chips and status.",
-      "**Do** draw icons as inline stroked SVG (2px stroke, round caps and joins, about 17px in buttons).",
-      "**Do** carry selected states on white or yellow as solid Ink fills, and focus as the 3px blue ring."
+      "Do slant every new tab, button, flag, header or band at exactly -12° and counter-skew its content upright.",
+      "Do set money and dates in Barlow Condensed 800 italic with tabular numerals.",
+      "Do keep cyan to selection, price signals, the live-rate dot and small marks.",
+      "Do run the selection sweep only in response to the owner's click, and honor prefers-reduced-motion.",
+      "Do keep fonts self-hosted so the app works offline."
     ],
     "donts": [
-      "**Don't** fall back to a gray table with one blue accent; the list is a shelf of priced cards.",
-      "**Don't** introduce a dark theme or desaturate the palette; the owner asked for a light theme with saturated color.",
-      "**Don't** use full POP yellow for warnings or decoration; warnings get POP Tint.",
-      "**Don't** use Price Red for errors or destructive actions; those use Red Ink.",
-      "**Don't** set prices or totals in the gothic or in a system sans.",
-      "**Don't** use neutral gray or hard offset shadows on cards; lift is short, soft and navy-tinted."
+      "Don't use Persona logos, character art or game assets; evoke the UI language only.",
+      "Don't lay down decorative cyan planes or fills.",
+      "Don't repeat the calendar's stacked back plane on other components.",
+      "Don't reintroduce the store-flyer yellow and red palette.",
+      "Don't slant cards, panels or image plates."
     ]
   }
 }

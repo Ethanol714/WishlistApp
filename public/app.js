@@ -253,33 +253,33 @@ function plateHTML(it) {
 
 function priceCardHTML(it, d) {
   if (it.price == null) {
-    return `<div class="pricecard"><div class="pc-empty">
+    return `<div class="band"><div class="empty-price">
       <strong>Price needed</strong>
       <span>${esc(it.lastError ? 'This store didn’t share its price.' : 'Add the price to include it.')}</span>
-      <button type="button" class="btn btn-quiet" data-act="edit">Add price</button>
+      <button type="button" class="btn btn-quiet" data-act="edit"><span>Add price</span></button>
     </div></div>`;
   }
   const rate = it.currency !== 'USD' ? state.rates?.rates?.[it.currency] : null;
-  let html = '<div class="pricecard">';
+  let main = '';
   if (d.discount) {
-    html += `<div class="sale-band"><span>SALE −${Math.round(d.discount.pct)}%</span><s>${money(it.originalPrice, it.currency)}</s></div>`;
+    main += `<span class="sale">−${Math.round(d.discount.pct)}%</span>
+      <span class="was">was <s>${money(it.originalPrice, it.currency)}</s></span>`;
   }
-  html += `<div class="pc-main">
-    <div class="pc-price"><span class="yen">${bigPrice(it.price, it.currency)}</span>${it.qty > 1 ? `<span class="pc-qty">× ${it.qty}</span>` : ''}</div>`;
+  main += `<span class="num">${bigPrice(it.price, it.currency)}${it.qty > 1 ? `<span class="qty-x">× ${it.qty}</span>` : ''}</span>`;
   if (it.currency !== 'USD') {
-    html += d.usd == null
-      ? `<div class="pc-usd"><span>${state.rates || state.ratesError ? `No exchange rate for ${esc(it.currency)}` : 'Converting to USD…'}</span></div>`
-      : `<div class="pc-usd"><strong>${money(d.goods)}</strong>${rate ? `<small>1 ${esc(it.currency)} = $${rateText(1 / rate)}</small>` : ''}</div>`;
+    main += d.usd == null
+      ? `<span class="usd"><span>${state.rates || state.ratesError ? `No exchange rate for ${esc(it.currency)}` : 'Converting to USD…'}</span></span>`
+      : `<span class="usd"><strong>${money(d.goods)}</strong>${rate ? `<span>1 ${esc(it.currency)} = $${rateText(1 / rate)}</span>` : ''}</span>`;
   }
   if (d.drop >= 0.5) {
-    html += `<span class="pc-drop" title="Was ${money(it.addedPrice, it.currency)} when you added it">${ICON.down}${Math.round(d.drop) || '<1'}% since added</span>`;
+    main += `<span class="drop" title="Was ${money(it.addedPrice, it.currency)} when you added it">${ICON.down}${Math.round(d.drop) || '<1'}% since added</span>`;
   }
-  html += '</div>';
+  let html = `<div class="band"><div class="band-main">${main}</div>`;
   if (canImport(it)) {
     const imp = it.mode === 'import';
     html += `<div class="buyway" role="group" aria-label="How you'll buy it">
-      <button type="button" data-mode="domestic" aria-pressed="${!imp}">Domestic</button>
-      <button type="button" data-mode="import" aria-pressed="${imp}">Import</button>
+      <button type="button" data-mode="domestic" aria-pressed="${!imp}"><span>Domestic</span></button>
+      <button type="button" data-mode="import" aria-pressed="${imp}"><span>Import</span></button>
     </div>`;
     if (imp && d.landed != null) {
       html += `<div class="landed"><span>+${money(d.importCost)} import, est.</span><strong>≈ ${money(d.landed)} landed</strong></div>`;
@@ -299,22 +299,22 @@ function cardHTML(it) {
   if (it.notes) tags.push(`<span class="tag note" title="${esc(it.notes)}">${esc(it.notes)}</span>`);
   const country = COUNTRY_LABEL[it.country];
   const native = it.vendorNative && it.vendorNative !== it.vendor ? `<small>${esc(it.vendorNative)}</small>` : '';
+  const storeName = esc(it.vendor || hostOf(it.url));
 
   return `<article class="card ${it.include ? '' : 'excluded'} ${state.highlight === it.id ? 'flash' : ''}" data-id="${esc(it.id)}">
     <a class="plate" href="${esc(href)}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">${plateHTML(it)}</a>
     <div class="card-top">
-      ${country ? `<span class="flag ${it.country === 'CN' ? 'cn' : ''}"><b>${country}</b>${it.country === 'CN' ? 'China' : 'Japan'}</span>` : '<span></span>'}
+      <span class="flag" title="${storeName}${it.vendorNative ? ' · ' + esc(it.vendorNative) : ''}"><span>${country ? `<b>${country}</b>` : ''}${storeName}${native}</span></span>
       <label class="include" title="Include in total"><input type="checkbox" class="inc" ${it.include ? 'checked' : ''} aria-label="Include in total"></label>
     </div>
     <div class="card-info">
-      <div class="store"><span>${esc(it.vendor || hostOf(it.url))}</span>${native}</div>
       <a class="title" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(it.title)}">${esc(it.title)}</a>
       ${tags.length ? `<div class="tags">${tags.join('')}</div>` : ''}
     </div>
     ${priceCardHTML(it, d)}
     <div class="card-foot">
       <label class="qty" title="Quantity"><span>Qty</span><input class="qty-in" type="number" min="1" max="999" step="1" value="${it.qty}" aria-label="Quantity"></label>
-      <a class="btn btn-blue" href="${esc(href)}" target="_blank" rel="noopener noreferrer">Buy ${ICON.out}</a>
+      <a class="btn btn-go" href="${esc(href)}" target="_blank" rel="noopener noreferrer"><span>Buy</span>${ICON.out}</a>
       <button type="button" class="icon-btn ${busy ? 'spin' : ''}" data-act="refresh" title="Check price again (last checked ${timeAgo(it.checkedAt)})" aria-label="Check price again">${ICON.refresh}</button>
       <button type="button" class="icon-btn" data-act="edit" title="Edit" aria-label="Edit">${ICON.edit}</button>
       <span class="foot-sep" aria-hidden="true"></span>
@@ -328,7 +328,7 @@ function pendingHTML(p) {
     <div class="plate"></div>
     <div class="card-info"><div class="store"><span>${esc(p.host || 'Store')}</span></div>
       <div class="loading-line"><span class="spinner"></span>Getting the photo, price and any sale…</div></div>
-    <div class="pricecard"><div class="pc-main"><span class="yen">&nbsp;</span></div></div>
+    <div class="band"><div class="band-main"><span class="num">&nbsp;</span></div></div>
     <div class="card-foot"></div>
   </article>`;
 }
@@ -353,11 +353,18 @@ function renderTabs() {
   const named = [...cats.keys()].filter(Boolean).sort((a, b) => a.localeCompare(b));
   if (state.tab !== 'all' && !cats.has(state.tab)) state.tab = 'all';
   const tab = (id, label, count) =>
-    `<button type="button" class="tab" role="tab" data-tab="${esc(id)}" aria-selected="${state.tab === id}">${esc(label)} <span class="count">${count}</span></button>`;
+    `<button type="button" class="tab" role="tab" data-tab="${esc(id)}" aria-selected="${state.tab === id}"><span>${esc(label)}<span class="count">${count}</span></span></button>`;
   let html = tab('all', 'All items', state.items.length);
   for (const c of named) html += tab(c, c, cats.get(c));
   if (named.length && cats.has('')) html += tab('', 'No category', cats.get(''));
-  $('#tabs').innerHTML = state.items.length ? html : '';
+  html = state.items.length ? html : '';
+  const shape = html.replace(/aria-selected="(true|false)"/g, '');
+  if (shape === renderTabs.shape) {
+    $$('#tabs .tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === state.tab)));
+  } else {
+    renderTabs.shape = shape;
+    $('#tabs').innerHTML = html;
+  }
 }
 
 function renderShelf() {
@@ -460,19 +467,56 @@ function renderImportSummary() {
   $('#importSum').textContent = `$${num(s.importShipping)} + ${num(s.importFeePct)}% + ${num(s.importDutyPct)}%`;
 }
 
+// Today's moon, from the mean synodic month counted from a known new moon (2000-01-06 18:14 UTC).
+function moonPhase(date = new Date()) {
+  const synodic = 29.530588853;
+  const age = (((date - Date.UTC(2000, 0, 6, 18, 14)) / 86400000) % synodic + synodic) % synodic;
+  const names = ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
+  return { fraction: age / synodic, name: names[Math.round((age / synodic) * 8) % 8] };
+}
+
+function moonSVG(fraction) {
+  // Lit part = a half disc plus or minus an ellipse whose width follows the phase.
+  const r = 10, cx = 11, cy = 11;
+  const waxing = fraction < 0.5;
+  const k = Math.cos(2 * Math.PI * fraction);  // 1 at new, -1 at full
+  const rx = Math.abs(k) * r;
+  const outer = waxing ? 1 : 0;              // which half is lit
+  const inner = (k > 0) === waxing ? 0 : 1;  // ellipse bulges into or out of the lit half
+  const lit = `M${cx} ${cy - r} A${r} ${r} 0 0 ${outer} ${cx} ${cy + r} A${rx} ${r} 0 0 ${inner} ${cx} ${cy - r}Z`;
+  return `<svg class="moon" viewBox="0 0 22 22" aria-hidden="true"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a3d70"/><path d="${lit}" fill="#f4f7ff"/></svg>`;
+}
+
+function timeOfDay(h) {
+  if (h === 0) return 'Dark Hour';
+  if (h < 6) return 'Late Night';
+  if (h < 9) return 'Early Morning';
+  if (h < 12) return 'Morning';
+  if (h < 14) return 'Lunchtime';
+  if (h < 18) return 'Afternoon';
+  return 'Evening';
+}
+
+function renderCalendar() {
+  const now = new Date();
+  const moon = moonPhase(now);
+  $('#calDate').innerHTML = `${now.getMonth() + 1}<small>/</small>${now.getDate()}`;
+  $('#calDay').innerHTML = `${now.toLocaleDateString('en-US', { weekday: 'short' })} ${moonSVG(moon.fraction)}<em>${timeOfDay(now.getHours())}</em>`;
+  $('#calDay').title = moon.name;
+}
+
 function renderRates() {
-  const pill = $('#rates');
+  const cal = $('#calendar');
   const r = state.rates;
-  pill.classList.toggle('live', !!r && !r.stale);
-  pill.classList.toggle('stale', !!r && !!r.stale);
+  cal.classList.toggle('live', !!r && !r.stale);
   if (!r) {
-    $('#ratesText').textContent = state.ratesError ? 'Exchange rates unavailable' : 'Loading exchange rates…';
+    $('#calRate').innerHTML = `<span class="dot"></span>${state.ratesError ? 'Exchange rates unavailable' : 'Loading exchange rates…'}`;
     return;
   }
   const day = new Date(r.updated * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const jpy = r.rates.JPY, cny = r.rates.CNY;
-  $('#ratesText').textContent = `${r.stale ? 'Rates from' : 'Today’s rates'} · $1 = ¥${jpy ? jpy.toFixed(1) : '—'} · ${cny ? cny.toFixed(2) : '—'} CNY`;
-  pill.title = `Exchange rates from ${r.source}, updated ${new Date(r.updated * 1000).toLocaleString()}`;
+  $('#calRate').innerHTML = `<span class="dot"></span>$1 = <b>¥${jpy ? jpy.toFixed(1) : '—'}</b> · <b>CN¥${cny ? cny.toFixed(2) : '—'}</b>${r.stale ? ' (older rates)' : ''}`;
+  cal.title = `Exchange rates from ${r.source}, updated ${new Date(r.updated * 1000).toLocaleString()}`;
   $('#regRates').textContent = `Converted at ${r.source} rates, ${day}. Store prices can change; check before buying.`;
 }
 
@@ -483,6 +527,7 @@ function renderStoreChips() {
 }
 
 function render() {
+  renderCalendar();
   renderRates();
   renderShelf();
   renderRegister();
@@ -516,6 +561,15 @@ async function addUrls(text) {
       render();
     }
   }));
+}
+
+// Replay the selection sweep on an element the owner just picked.
+function sweep(el) {
+  if (!el) return;
+  el.classList.remove('sweep');
+  void el.offsetWidth;
+  el.classList.add('sweep');
+  setTimeout(() => el.classList.remove('sweep'), 400);
 }
 
 function replaceItem(item) {
@@ -711,6 +765,7 @@ function bindEvents() {
     if (!tab) return;
     state.tab = tab.dataset.tab;
     renderShelf();
+    sweep($(`#tabs .tab[aria-selected="true"]`));
   });
 
   $('#grid').addEventListener('click', (e) => {
@@ -720,7 +775,11 @@ function bindEvents() {
     if (!item) return;
     const way = e.target.closest('.buyway button');
     if (way) {
-      if (item.mode !== way.dataset.mode) patchItem(item.id, { mode: way.dataset.mode });
+      if (item.mode !== way.dataset.mode) {
+        way.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === way)));
+        sweep(way);
+        setTimeout(() => patchItem(item.id, { mode: way.dataset.mode }), 260);
+      }
       return;
     }
     const btn = e.target.closest('[data-act]');
@@ -757,7 +816,22 @@ function bindEvents() {
     saveSettingsSoon();
     renderPlan();
     renderRegister();
+    sweep(btn);
   });
+  const goalM = $('#goalM'), goalY = $('#goalY');
+  const thisYear = new Date().getFullYear();
+  goalM.innerHTML = Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}">${new Date(2000, i, 1).toLocaleString('en-US', { month: 'long' })}</option>`).join('');
+  goalY.innerHTML = Array.from({ length: 11 }, (_, i) => `<option>${thisYear + i}</option>`).join('');
+  const [gy, gm] = (state.settings.goalMonth || '').split('-').map(Number);
+  if (gy) { goalY.value = String(Math.max(gy, thisYear)); goalM.value = String(gm || 1); }
+  const setGoal = () => {
+    state.settings.goalMonth = `${goalY.value}-${String(goalM.value).padStart(2, '0')}`;
+    saveSettingsSoon();
+    renderPlan();
+    renderRegister();
+  };
+  goalM.addEventListener('change', setGoal);
+  goalY.addEventListener('change', setGoal);
   $$('[data-setting]', register).forEach((el) => {
     el.value = state.settings[el.dataset.setting] ?? '';
     el.addEventListener('input', () => {

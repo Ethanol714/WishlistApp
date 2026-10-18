@@ -34,7 +34,7 @@ Built around Japanese and Chinese stores (Bic Camera, DLsite, Taobao, Tmall, JD 
 
 ## Brand Commitments
 
-Name: Wishlist. The owner asked for a light theme, saturated colors and a more classic typeface.
+Name: Wishlist. Look, in the owner's words: "more neutral" with "a persona 3 theme", specifically Persona 3 Reload, light theme, Persona-style sans type (replacing an earlier store-flyer look they found too Best Buy-like). Evoke the game's UI language only: no logos, character art or game assets.
 
 ## Evidence on Hand
 

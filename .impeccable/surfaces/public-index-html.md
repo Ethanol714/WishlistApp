@@ -2,25 +2,25 @@
 version: 1
 slug: "public-index-html"
 primary_target: "public/index.html"
-related_targets: ["public/styles.css","public/app.js"]
+related_targets: ["public/styles.css","public/app.js","extension/popup.css"]
 ---
 
 # Wishlist main screen
 
-Scope: the single-page Wishlist app (public/index.html, styles.css, app.js). Mode: Operate.
+Scope: the single-page Wishlist app (public/index.html, styles.css, app.js) and the Chrome extension popup. Mode: Operate.
 Audience and job: one owner on their Mac, in daytime light, collecting mostly Japanese and Chinese products and checking what the list costs in dollars, domestically or imported, and how to pay for it.
-Constraints: light theme, saturated colors, classic typeface (owner's request). Plain HTML/CSS/JS, no build step.
+Constraints (owner's words): more neutral than the previous store look; a Persona 3 theme, specifically P3 Reload; light theme; Persona-style sans type. Evoke the game's UI language only: no logos, character art, or game assets. Plain HTML/CSS/JS, no build step, fonts self-hosted.
 
 ## Direction contract
 
-THESIS: Every item is costed the way a Tokyo electronics store prices a shelf: a bright yellow price card with the price in big red numerals, and its dollar cost beneath. Refuses the gray table with one blue accent.
+THESIS: The wishlist read like Persona 3 Reload's menus by moonlight: slanted panels, a calendar block that marks the day, and prices set in heavy italic numerals. Refuses the store-flyer yellow and red, and the generic gray dashboard.
 
-OWN-WORLD: White shelf cards on a cool light-gray floor. Store blue #0A4EA2 header and register, POP yellow #FFE100 price cards, price red #E60012 numerals and sale bands, ink #111. A heavy Japanese mincho serif for prices and titles, a clean Japanese gothic for controls and labels. Flat color, crisp 1px edges, short soft shadows only on lifted cards.
+OWN-WORLD: Pale moonlit ground (#eef3fa) with white panels, deep navy ink (#0b1a3a), Reload blue (#1f5fff) for action and selection, and moonlight cyan (#2fd3ff) for highlights and sales. Neutral everywhere else. Barlow Condensed heavy italic for numerals, headings and tabs; Barlow for text; Zen Kaku Gothic New for Japanese and Chinese. A fixed -12° slant on tabs, headers, selection bars and the price band; panels stay square to the grid.
 
-STORY: The owner sees the dollar total at once, scans each item's price card, flips items between domestic and import, and reads off a monthly savings or payment amount.
+STORY: The owner opens the app, sees today's date block with the moon phase and rate, scans cards whose prices sit on slanted navy bands, flips items between domestic and import, and reads the total and monthly plan from the status panel.
 
-FIRST VIEWPORT: Blue store header with the name, rate status and the add-link bar. Below, left: category tabs plus sort, then a grid of product cards, each with a photo plate, title, store, and a yellow price card (local price in red mincho numerals, USD below, sale band when discounted, Domestic/Import switch). Right: a sticky blue "register" column with the total, import extras, and the monthly plan.
+FIRST VIEWPORT: Top: a white header with the wordmark, the add-link bar, and on the right a slanted calendar block (month/day in big italic numerals, weekday, today's moon phase, $1 = ¥ / CN¥). Below, left: slanted category tabs plus sort, then a grid of item cards (photo plate, store label on a slanted navy tag, title, price on a slanted navy band with cyan sale marker, USD below, Domestic/Import slanted switch). Right: a sticky status panel with a navy slanted header, receipt rows, the total in big italic numerals, the monthly plan.
 
-FORM: Electronics-store price card (Bic Camera / Yodobashi POP), candidate 1 of my ordered list, chosen as Impeccable's pick. Seed key cbaae5be.
+FORM: Persona 3 Reload menu language, pinned by the owner (no roll; a pinned direction beats the roll).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

@@ -11,24 +11,6 @@
         ],
         "createdAt": "2026-10-18T00:02:38.828Z",
         "reason": "Claude triage: the editor <dialog> uses padding 0 on purpose; its header, body, alert and footer each have their own 14-18px padding, as verified in the browser screenshot"
-      },
-      {
-        "rule": "side-tab",
-        "value": "*",
-        "files": [
-          "public/index.html"
-        ],
-        "createdAt": "2026-10-18T00:46:32.416Z",
-        "reason": "Claude triage: the only match is the full-width store-header shelf-edge stripe, the Store Price Card direction's shell (brief .impeccable/surfaces/public-index-html.md); not a card accent"
-      },
-      {
-        "rule": "side-tab",
-        "value": "*",
-        "files": [
-          "extension/popup.html"
-        ],
-        "createdAt": "2026-10-18T00:57:33.869Z",
-        "reason": "Claude triage: the only match is the full-width popup header's shelf-edge stripe, the same Store Price Card element as the app header; not a card accent"
       }
     ]
   }

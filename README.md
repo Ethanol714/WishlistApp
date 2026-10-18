@@ -19,8 +19,8 @@ Your list is saved in `data/wishlist.json` (kept out of git).
 ## Features
 
 - **Add any link:** product photo, title, store, price, currency and a Buy link back to the original page.
-- **Price cards:** each item shows its store price on a yellow price card, with the US-dollar amount beneath.
-- **Sales:** a red SALE band shows the regular price and % off when a store lists one; items that got
+- **Look:** a light, Persona 3 Reload-inspired design: slanted navy price bands, condensed italic numerals and a calendar block with today's moon phase and exchange rate.
+- **Sales:** a cyan tag shows the % off and the regular price when a store lists one; items that got
   cheaper since you added them are flagged.
 - **Domestic or Import:** for Japanese and Chinese items, choose per item whether you'll buy it
   domestically (store price only) or import it (adds your estimates for shipping, proxy/service fee
@@ -58,7 +58,7 @@ Install it once:
 1. Open `chrome://extensions` in Chrome.
 2. Turn on **Developer mode** (top right).
 3. Click **Load unpacked** and choose the `extension` folder inside this project.
-4. Pin the yellow tag icon from the puzzle-piece menu so it stays on your toolbar.
+4. Pin the Wishlist icon (navy tile, cyan slash) from the puzzle-piece menu so it stays on your toolbar.
 
 Then, with the Wishlist app running, open a product page and click the icon. It scans the page as
 your browser shows it, and shows the photo, store, price, sale and dollar amount, all editable.
@@ -79,5 +79,5 @@ it (signed in, prices loaded), to the app. You can always edit an item and type 
 - `wishlist/vendors.py` and `wishlist/asia.py`: Japanese and Chinese store registry and readers
 - `wishlist/rates.py`: daily USD exchange rates, cached in `data/rates.json`
 - `public/`: the web app (HTML, CSS, vanilla JavaScript)
-- `public/fonts/`: Shippori Mincho B1 and Zen Kaku Gothic New, bundled so the app looks right offline (SIL Open Font License, license files included)
+- `public/fonts/`: Barlow, Barlow Condensed and Zen Kaku Gothic New (for Japanese and Chinese), bundled so the app looks right offline (SIL Open Font License, license files included)
 - `extension/`: the Chrome extension (Manifest V3; talks to the app at http://localhost:8080)
