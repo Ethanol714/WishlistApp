@@ -257,7 +257,7 @@ A three-color store palette (blue, yellow, red) at full saturation, set on cool 
 
 **Character:** A heavy, inky Japanese mincho gives prices and titles the weight of a printed store POP card; a quiet, even gothic handles every control. Both cover kana and kanji, so Japanese and Chinese product titles set in the same voice as English ones.
 
-Both faces load from Google Fonts (`display=swap`, weights mincho 500/700/800, gothic 400/500/700). Self-hosting them is an open decision waiting on the owner; offline, the stacks fall back to Hiragino Mincho ProN and Hiragino Kaku Gothic ProN on the Mac. The Chrome extension popup can't load the CDN faces and uses the Hiragino-first system stacks with the same roles and weights.
+Both faces are self-hosted in `public/fonts/` (from Google Fonts under the SIL Open Font License; mincho 700/800, gothic 400/500/700, `font-display: swap`), split by Unicode range so a page only downloads the characters it shows, and they work offline. The owner chose bundling over the CDN. If a file is missing, the stacks fall back to Hiragino Mincho ProN and Hiragino Kaku Gothic ProN on the Mac. The Chrome extension popup uses the Hiragino-first system stacks with the same roles and weights.
 
 ### Hierarchy
 - **Price** (mincho 800, 46px, line-height 1, -0.02em; 30px under 600px): the price numerals on each price card. The currency mark sets at 0.5em.

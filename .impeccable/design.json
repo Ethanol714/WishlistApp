@@ -378,9 +378,9 @@
       }
     },
     "fontLoading": {
-      "source": "Google Fonts CDN (Shippori Mincho B1 500/700/800, Zen Kaku Gothic New 400/500/700, display=swap)",
+      "source": "Self-hosted in public/fonts (Shippori Mincho B1 700/800, Zen Kaku Gothic New 400/500/700), unicode-range subsets from Google Fonts, font-display: swap",
       "offlineFallback": "Hiragino Mincho ProN / Hiragino Kaku Gothic ProN",
-      "status": "open decision: self-hosting awaits the owner",
+      "status": "decided: bundled for offline use (owner's choice)",
       "extensionPopup": "Hiragino-first system stacks, no CDN faces"
     },
     "shadows": [

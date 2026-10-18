@@ -79,4 +79,5 @@ it (signed in, prices loaded), to the app. You can always edit an item and type 
 - `wishlist/vendors.py` and `wishlist/asia.py`: Japanese and Chinese store registry and readers
 - `wishlist/rates.py`: daily USD exchange rates, cached in `data/rates.json`
 - `public/`: the web app (HTML, CSS, vanilla JavaScript)
+- `public/fonts/`: Shippori Mincho B1 and Zen Kaku Gothic New, bundled so the app looks right offline (SIL Open Font License, license files included)
 - `extension/`: the Chrome extension (Manifest V3; talks to the app at http://localhost:8080)

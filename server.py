@@ -23,6 +23,8 @@ from wishlist.scraper import ScrapeError, check_url, extract, scrape
 from wishlist.store import Store
 from wishlist.vendors import VENDORS, vendor_for
 
+mimetypes.add_type('font/woff2', '.woff2')
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PUBLIC = os.path.join(ROOT, 'public')
 DATA = os.environ.get('WISHLIST_DATA') or os.path.join(ROOT, 'data')
@@ -253,7 +255,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', ctype)
         self.send_header('Content-Length', str(len(body)))
-        self.send_header('Cache-Control', 'no-cache')
+        # Font files never change (their names are fixed per version), so let the browser keep them.
+        self.send_header('Cache-Control', 'max-age=31536000, immutable' if rel.startswith('fonts/') and rel.endswith('.woff2') else 'no-cache')
         self.end_headers()
         self.wfile.write(body)
 
