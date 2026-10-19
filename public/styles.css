@@ -96,6 +96,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .head-links { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 22px; margin-top: 10px; }
 .head-link { background: none; border: 0; padding: 2px 0; color: var(--blue); font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(31, 95, 255, .35); text-underline-offset: 4px; list-style: none; }
 .head-link:hover { text-decoration-color: var(--blue); }
+.head-link.reload { display: inline-flex; align-items: center; gap: 5px; }
+.head-link.reload svg { width: 15px; height: 15px; stroke-width: 2.4; }
+.head-link.reload.busy svg { animation: spin .8s linear infinite; }
 .bm summary::-webkit-details-marker { display: none; }
 .bm-body { margin-top: 10px; max-width: 640px; padding: 14px 16px; background: var(--panel-2); border: 1px solid var(--line); font-size: 14px; color: var(--ink-2); }
 .bm-body p { margin: 0 0 12px; }

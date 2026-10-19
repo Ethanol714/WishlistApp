@@ -19,6 +19,9 @@ Download from the [Releases page](https://github.com/Ethanol714/WishlistApp/rele
 To add items from any store, click **Get the Chrome extension** at the top of the app and follow
 the five steps; the app opens the right folder and the right Chrome page for you.
 
+Items you add with the extension show up in the app by themselves within a few seconds. To pull the
+latest list right away, click **Reload list** at the top (or press ⌘R / Ctrl+R).
+
 The desktop app is the same Wishlist in its own window. While the window is open it serves your list on
 http://localhost:8080, so the Chrome extension and the bookmark button add items to it directly.
 Your list is stored in `~/Library/Application Support/Wishlist` (Mac) or `%APPDATA%\Wishlist`

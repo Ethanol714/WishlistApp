@@ -241,6 +241,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(body)))
         self.send_header('Cache-Control', 'no-store')
+        # Lets the page tell whether the list changed since it last loaded it.
+        self.send_header('X-Wishlist-Rev', str(store.revision()))
         self.end_headers()
         self.wfile.write(body)
 
@@ -324,7 +326,7 @@ class Handler(BaseHTTPRequestHandler):
 
     # -- API ---------------------------------------------------------------
     def list_items(self):
-        self.send_json({'items': store.items()})
+        self.send_json({'items': store.items(), 'rev': store.revision()})
 
     def add_item(self):
         body = self.read_json()
@@ -456,6 +458,9 @@ class Handler(BaseHTTPRequestHandler):
             {'name': v.name, 'native': v.native, 'country': v.country, 'currency': v.currency,
              'access': v.access, 'domain': v.suffix} for v in VENDORS]})
 
+    def get_revision(self):
+        self.send_json({'rev': store.revision()})
+
     def health(self):
         self.send_json({'app': 'wishlist', 'data': DATA, 'extensionSeen': store.extension_seen()})
 
@@ -507,6 +512,7 @@ ROUTES = [
     (r'/api/rates', {'GET': Handler.get_rates}),
     (r'/api/vendors', {'GET': Handler.list_vendors}),
     (r'/api/health', {'GET': Handler.health}),
+    (r'/api/revision', {'GET': Handler.get_revision}),
     (r'/api/extension/folder', {'POST': Handler.extension_folder}),
     (r'/api/extension/chrome', {'POST': Handler.open_chrome_extensions}),
     (r'/api/settings', {'GET': Handler.get_settings, 'PUT': Handler.put_settings}),

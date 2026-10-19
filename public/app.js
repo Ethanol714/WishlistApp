@@ -26,6 +26,8 @@ const state = {
   refreshing: new Set(),
   highlight: null,
   editing: null,
+  rev: 0,
+  syncing: false,
   tab: 'all',
   sort: 'newest',
 };
@@ -122,6 +124,8 @@ async function api(path, { method = 'GET', body } = {}) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  const rev = Number(res.headers.get('X-Wishlist-Rev'));
+  if (method !== 'GET' && rev === state.rev + 1) state.rev = rev;
   return data;
 }
 
@@ -728,6 +732,66 @@ async function submitEditor(e) {
   }
 }
 
+// ---------------------------------------------------------------- keeping the list in sync
+
+// True while the owner is typing in a field or editing an item, so a background reload waits.
+function busyEditing() {
+  const el = document.activeElement;
+  return $('#editor').open || (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) && el.id !== 'urlInput');
+}
+
+async function reloadList(manual = false) {
+  if (state.syncing) return;
+  state.syncing = true;
+  const btn = $('#reloadList');
+  btn.classList.add('busy');
+  try {
+    const known = new Set(state.items.map((i) => i.id));
+    const { items, rev } = await api('/api/items');
+    const added = items.filter((i) => !known.has(i.id));
+    state.items = items;
+    state.rev = rev;
+    if (added.length) {
+      state.highlight = added[added.length - 1].id;
+      setTimeout(() => { state.highlight = null; }, 2000);
+    }
+    if (manual) await loadRates(false);
+    render();
+    if (added.length === 1) toast(`Added "${added[0].title}" from ${added[0].vendor}`, 'ok');
+    else if (added.length > 1) toast(`${added.length} new items added to your list`, 'ok');
+    else if (manual) toast('Your list is up to date', 'ok', 2500);
+  } catch (err) {
+    if (manual) toast(err.message, 'error');
+  } finally {
+    state.syncing = false;
+    btn.classList.remove('busy');
+  }
+}
+
+// Pick up items added from the Chrome extension (or anywhere else) without reopening the app.
+async function checkForChanges() {
+  if (document.hidden || state.syncing || state.pending.length || busyEditing()) return;
+  try {
+    const { rev } = await api('/api/revision');
+    if (rev !== state.rev) await reloadList();
+  } catch {
+    // the app may be restarting; try again on the next tick
+  }
+}
+
+function startSync() {
+  setInterval(checkForChanges, 3000);
+  window.addEventListener('focus', checkForChanges);
+  document.addEventListener('visibilitychange', checkForChanges);
+  $('#reloadList').addEventListener('click', () => reloadList(true));
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'r') {
+      e.preventDefault();
+      reloadList(true);
+    }
+  });
+}
+
 // ---------------------------------------------------------------- extension guide
 
 async function openGuide() {
@@ -896,8 +960,9 @@ async function loadRates(rerender = true) {
 async function init() {
   const params = new URLSearchParams(location.search);
   try {
-    const [{ items }, { settings }, { vendors }] = await Promise.all([api('/api/items'), api('/api/settings'), api('/api/vendors')]);
+    const [{ items, rev }, { settings }, { vendors }] = await Promise.all([api('/api/items'), api('/api/settings'), api('/api/vendors')]);
     state.items = items;
+    state.rev = rev;
     state.vendors = vendors;
     state.settings = { ...defaultSettings(), ...settings };
   } catch (err) {
@@ -909,6 +974,7 @@ async function init() {
   render();
   loadRates();  // amounts read "Converting…" until the rates arrive, then everything re-renders
   setupBookmarklet();
+  startSync();
 
   if (params.has('added')) {
     const item = state.items.find((x) => x.id === params.get('added'));

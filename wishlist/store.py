@@ -11,6 +11,7 @@ class Store:
     def __init__(self, path):
         self.path = path
         self.lock = threading.RLock()
+        self.rev = 1  # bumps whenever an item is added, changed or removed
         os.makedirs(os.path.dirname(path), exist_ok=True)
         self.db = self._load()
 
@@ -50,6 +51,7 @@ class Store:
     def insert(self, item):
         with self.lock:
             self.db['items'].append(item)
+            self.rev += 1
             self._save()
             return copy.deepcopy(item)
 
@@ -58,6 +60,7 @@ class Store:
             for item in self.db['items']:
                 if item['id'] == item_id:
                     mutate(item)
+                    self.rev += 1
                     self._save()
                     return copy.deepcopy(item)
         return None
@@ -67,6 +70,7 @@ class Store:
             before = len(self.db['items'])
             self.db['items'] = [i for i in self.db['items'] if i['id'] != item_id]
             if len(self.db['items']) != before:
+                self.rev += 1
                 self._save()
                 return True
         return False
@@ -95,3 +99,7 @@ class Store:
         with self.lock:
             self.db['extensionSeen'] = when
             self._save()
+
+    def revision(self):
+        with self.lock:
+            return self.rev

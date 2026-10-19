@@ -3,7 +3,7 @@
 #   Windows: pyinstaller wishlist.spec   ->  dist/Wishlist.exe
 import sys
 
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 a = Analysis(
     ['desktop.py'],
